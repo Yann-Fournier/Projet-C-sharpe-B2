@@ -13,13 +13,12 @@ class Program
         // Data Source = chemin de la database
         string absolutePath = @"..\..\..\BDD\database.sqlite";
         string connectionString = $"Data Source={absolutePath};Version=3;";
-
-
+        // Creation de la connection
         SQLiteConnection connection = new SQLiteConnection(connectionString);
         try
         {
+            // Ouvrir la connection avec la base de données
             connection.Open();
-            // La connexion est maintenant ouverte et tu peux exécuter des requêtes SQL ici
             Console.WriteLine("Connexion réussie à la base de données SQLite!");
         }
         catch (Exception ex)
@@ -29,10 +28,8 @@ class Program
 
         try
         {
-            // Exemple de requête SELECT
-            Console.WriteLine("Entrer dans le try");
+            // Exemple de requête SELECT ALL
             SelectAllLogin_info(connection, "SELECT * FROM Login_info");
-            Console.WriteLine("Sortie du try");
         }
         catch (Exception ex)
         {
@@ -41,6 +38,7 @@ class Program
 
         try
         {
+            // Fermer la connection avec la base de données
             connection.Close();
         }
         catch (Exception e)
@@ -140,9 +138,7 @@ class Program
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
         }
-
         byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-
         context.Response.ContentLength64 = buffer.Length;
         Stream output = context.Response.OutputStream;
         output.Write(buffer, 0, buffer.Length);
@@ -152,26 +148,20 @@ class Program
     static void SelectAllLogin_info(SQLiteConnection connection, string query)
     {
         SQLiteCommand command = new SQLiteCommand(query, connection);
-        Console.WriteLine("Commande créer");
         SQLiteDataReader reader = command.ExecuteReader();
-        Console.WriteLine("Reader créer");
+        Console.WriteLine("Colonne1: Id, Colonne2: mail, Colonne3: Password");
         while (reader.Read())
         {
-            Console.WriteLine("Boucle reader");
             // Traitement des résultats de la requête SELECT
-            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne2: {reader["Password"]}");
+            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne3: {reader["Password"]}");
         }
-            
-        
     }
 
     static void ExecuteNonQuery(SQLiteConnection connection, string query)
     {
         SQLiteCommand command = new SQLiteCommand(query, connection);
-        
         int rowsAffected = command.ExecuteNonQuery();
         Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
-        
     }
 }
 
