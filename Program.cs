@@ -4,6 +4,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using System.Collections.Specialized;
+using System.Web;
 
 class Program
 {
@@ -29,7 +31,7 @@ class Program
         try
         {
             // Exemple de requête SELECT ALL
-            SelectAllLogin_info(connection, "SELECT * FROM Login_info");
+            // SelectAllLogin_info(connection, "SELECT * FROM Login_info");
         }
         catch (Exception ex)
         {
@@ -47,7 +49,6 @@ class Program
             throw;
         }
         
-        
         // Création de l'api en localhost sur le port 8080
         string url = "http://localhost:8080/";
         var listener = new HttpListener();
@@ -62,16 +63,17 @@ class Program
             ProcessRequest(context);
         }
     }
-
+    
     static void ProcessRequest(HttpListenerContext context)
     {
         string responseString = ""; // tkt
 
-        // Recupération de la requête et mise en forme
-        string path = context.Request.Url.AbsolutePath.ToLower();
+        // Recupération de la requête et mise en forme -------------------------------------------------------------
+        // Récupération du chemin et mise en forme
+        string path = context.Request.Url.AbsolutePath.ToLower(); 
         string[] split_path = path.Split("/");
-        split_path= split_path.Where((source, index) => index != 0).ToArray();
-        if (split_path[split_path.Length - 1] == "")
+        split_path = split_path.Where((source, index) => index != 0).ToArray();
+        if (split_path[split_path.Length - 1] == "" && split_path.Length != 1) // Pour gérer le cas du 'home page'
         {
             split_path= split_path.Where((source, index) => index != split_path.Length - 1).ToArray();
         }
@@ -79,6 +81,10 @@ class Program
         {
             split_path[i] = "/" + split_path[i];
         }
+        
+        // Récupération des paramètres et mise en forme (?test=123&aze=aze)
+        string param = context.Request.Url.Query;
+        NameValueCollection parameters = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
         
         // Mise en forme de la réponse.
         switch (split_path[0])
