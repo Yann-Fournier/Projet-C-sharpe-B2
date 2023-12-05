@@ -49,18 +49,18 @@ class Program
         
         
         // Création de l'api en localhost sur le port 8080
-        // string url = "http://localhost:8080/";
-        // var listener = new HttpListener();
-        // listener.Prefixes.Add(url);
-        // listener.Start();
-        // Console.WriteLine($"Ecoute sur {url}");
+        string url = "http://localhost:8080/";
+        var listener = new HttpListener();
+        listener.Prefixes.Add(url);
+        listener.Start();
+        Console.WriteLine($"Ecoute sur {url}");
 
         // Boucle permettant d'ecouter les requêtes
-        // while (true)
-        // {
-        //     var context = await listener.GetContextAsync();
-        //     ProcessRequest(context);
-        // }
+        while (true)
+        {
+            var context = await listener.GetContextAsync();
+            ProcessRequest(context);
+        }
     }
 
     static void ProcessRequest(HttpListenerContext context)
