@@ -3,22 +3,66 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SQLite;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        string url = "http://localhost:8080/";
-        var listener = new HttpListener();
-        listener.Prefixes.Add(url);
-        listener.Start();
-        Console.WriteLine($"Ecoute sur {url}");
+        // Connection à la base de données
+        // Data Source = chemin de la database
+        string absolutePath = @"..\..\..\BDD\database.sqlite";
+        string connectionString = $"Data Source={absolutePath};Version=3;";
 
-        while (true)
+
+        SQLiteConnection connection = new SQLiteConnection(connectionString);
+        try
         {
-            var context = await listener.GetContextAsync();
-            ProcessRequest(context);
+            connection.Open();
+            // La connexion est maintenant ouverte et tu peux exécuter des requêtes SQL ici
+            Console.WriteLine("Connexion réussie à la base de données SQLite!");
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erreur de connexion: " + ex.Message);
+        }
+
+        try
+        {
+            // Exemple de requête SELECT
+            Console.WriteLine("Entrer dans le try");
+            SelectAllLogin_info(connection, "SELECT * FROM Login_info");
+            Console.WriteLine("Sortie du try");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Wrong request: " + ex.Message);
+        }
+
+        try
+        {
+            connection.Close();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Impossible to close connection: " + e.Message);
+            throw;
+        }
+        
+        
+        // Création de l'api en localhost sur le port 8080
+        // string url = "http://localhost:8080/";
+        // var listener = new HttpListener();
+        // listener.Prefixes.Add(url);
+        // listener.Start();
+        // Console.WriteLine($"Ecoute sur {url}");
+
+        // Boucle permettant d'ecouter les requêtes
+        // while (true)
+        // {
+        //     var context = await listener.GetContextAsync();
+        //     ProcessRequest(context);
+        // }
     }
 
     static void ProcessRequest(HttpListenerContext context)
@@ -103,6 +147,31 @@ class Program
         Stream output = context.Response.OutputStream;
         output.Write(buffer, 0, buffer.Length);
         output.Close();
+    }
+    
+    static void SelectAllLogin_info(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        Console.WriteLine("Commande créer");
+        SQLiteDataReader reader = command.ExecuteReader();
+        Console.WriteLine("Reader créer");
+        while (reader.Read())
+        {
+            Console.WriteLine("Boucle reader");
+            // Traitement des résultats de la requête SELECT
+            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne2: {reader["Password"]}");
+        }
+            
+        
+    }
+
+    static void ExecuteNonQuery(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        
+        int rowsAffected = command.ExecuteNonQuery();
+        Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
+        
     }
 }
 
