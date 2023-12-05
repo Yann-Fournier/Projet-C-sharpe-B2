@@ -1,0 +1,14 @@
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\bin\Debug\net8.0\Test_Projet.exe
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\bin\Debug\net8.0\Test_Projet.deps.json
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\bin\Debug\net8.0\Test_Projet.runtimeconfig.json
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\bin\Debug\net8.0\Test_Projet.dll
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\bin\Debug\net8.0\Test_Projet.pdb
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.AssemblyInfoInputs.cache
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.AssemblyInfo.cs
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.csproj.CoreCompileInputs.cache
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.dll
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\refint\Test_Projet.dll
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.pdb
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\Test_Projet.genruntimeconfig.cache
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Test_Projet\obj\Debug\net8.0\ref\Test_Projet.dll
