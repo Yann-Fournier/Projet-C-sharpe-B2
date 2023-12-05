@@ -4,7 +4,7 @@ from faker import Faker
 
 from hash import hash_passwd
 
-con = sqlite3.connect("./database.sqlite")
+con = sqlite3.connect("../database.sqlite")
 global id_master
 
 
