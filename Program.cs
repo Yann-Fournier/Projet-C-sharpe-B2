@@ -4,6 +4,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using System.Collections.Specialized;
+using System.Web;
 
 class Program
 {
@@ -13,13 +15,12 @@ class Program
         // Data Source = chemin de la database
         string absolutePath = @"..\..\..\BDD\database.sqlite";
         string connectionString = $"Data Source={absolutePath};Version=3;";
-
-
+        // Creation de la connection
         SQLiteConnection connection = new SQLiteConnection(connectionString);
         try
         {
+            // Ouvrir la connection avec la base de données
             connection.Open();
-            // La connexion est maintenant ouverte et tu peux exécuter des requêtes SQL ici
             Console.WriteLine("Connexion réussie à la base de données SQLite!");
         }
         catch (Exception ex)
@@ -29,10 +30,8 @@ class Program
 
         try
         {
-            // Exemple de requête SELECT
-            Console.WriteLine("Entrer dans le try");
-            SelectAllLogin_info(connection, "SELECT * FROM Login_info");
-            Console.WriteLine("Sortie du try");
+            // Exemple de requête SELECT ALL
+            // SelectAllLogin_info(connection, "SELECT * FROM Login_info");
         }
         catch (Exception ex)
         {
@@ -41,6 +40,7 @@ class Program
 
         try
         {
+            // Fermer la connection avec la base de données
             connection.Close();
         }
         catch (Exception e)
@@ -49,31 +49,31 @@ class Program
             throw;
         }
         
-        
         // Création de l'api en localhost sur le port 8080
-        // string url = "http://localhost:8080/";
-        // var listener = new HttpListener();
-        // listener.Prefixes.Add(url);
-        // listener.Start();
-        // Console.WriteLine($"Ecoute sur {url}");
+        string url = "http://localhost:8080/";
+        var listener = new HttpListener();
+        listener.Prefixes.Add(url);
+        listener.Start();
+        Console.WriteLine($"Ecoute sur {url}");
 
         // Boucle permettant d'ecouter les requêtes
-        // while (true)
-        // {
-        //     var context = await listener.GetContextAsync();
-        //     ProcessRequest(context);
-        // }
+        while (true)
+        {
+            var context = await listener.GetContextAsync();
+            ProcessRequest(context);
+        }
     }
-
+    
     static void ProcessRequest(HttpListenerContext context)
     {
         string responseString = ""; // tkt
 
-        // Recupération de la requête et mise en forme
-        string path = context.Request.Url.AbsolutePath.ToLower();
+        // Recupération de la requête et mise en forme -------------------------------------------------------------
+        // Récupération du chemin et mise en forme
+        string path = context.Request.Url.AbsolutePath.ToLower(); 
         string[] split_path = path.Split("/");
-        split_path= split_path.Where((source, index) => index != 0).ToArray();
-        if (split_path[split_path.Length - 1] == "")
+        split_path = split_path.Where((source, index) => index != 0).ToArray();
+        if (split_path[split_path.Length - 1] == "" && split_path.Length != 1) // Pour gérer le cas du 'home page'
         {
             split_path= split_path.Where((source, index) => index != split_path.Length - 1).ToArray();
         }
@@ -81,6 +81,10 @@ class Program
         {
             split_path[i] = "/" + split_path[i];
         }
+        
+        // Récupération des paramètres et mise en forme (?test=123&aze=aze)
+        string param = context.Request.Url.Query;
+        NameValueCollection parameters = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
         
         // Mise en forme de la réponse.
         switch (split_path[0])
@@ -140,9 +144,7 @@ class Program
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
         }
-
         byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-
         context.Response.ContentLength64 = buffer.Length;
         Stream output = context.Response.OutputStream;
         output.Write(buffer, 0, buffer.Length);
@@ -152,26 +154,20 @@ class Program
     static void SelectAllLogin_info(SQLiteConnection connection, string query)
     {
         SQLiteCommand command = new SQLiteCommand(query, connection);
-        Console.WriteLine("Commande créer");
         SQLiteDataReader reader = command.ExecuteReader();
-        Console.WriteLine("Reader créer");
+        Console.WriteLine("Colonne1: Id, Colonne2: mail, Colonne3: Password");
         while (reader.Read())
         {
-            Console.WriteLine("Boucle reader");
             // Traitement des résultats de la requête SELECT
-            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne2: {reader["Password"]}");
+            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne3: {reader["Password"]}");
         }
-            
-        
     }
 
     static void ExecuteNonQuery(SQLiteConnection connection, string query)
     {
         SQLiteCommand command = new SQLiteCommand(query, connection);
-        
         int rowsAffected = command.ExecuteNonQuery();
         Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
-        
     }
 }
 
