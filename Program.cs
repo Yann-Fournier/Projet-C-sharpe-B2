@@ -2,39 +2,27 @@
 using System.Text;
 using System.Data.SQLite;
 using System.Collections.Specialized;
+
 using System.Web;
+using BDD; // Notre bibliothèque de requêtes SQL.
 
 class Program
 {
     static async Task Main(string[] args)
     {
         // Connection à la base de données
-        // Data Source = chemin de la database
-        string absolutePath = @"..\..\..\BDD\database.sqlite";
-        string connectionString = $"Data Source={absolutePath};Version=3;";
-        // Creation de la connection
-        SQLiteConnection connection = new SQLiteConnection(connectionString);
-        try
-        {
-            // Ouvrir la connection avec la base de données
-            connection.Open();
-            Console.WriteLine("Connexion réussie à la base de données SQLite!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Erreur de connexion: " + ex.Message);
-        }
+        SQLiteConnection connection = SQLRequest.openSqLiteConnection();
 
         try
         {
             // Exemple de requête SELECT ALL
-            // SelectAllLogin_info(connection, "SELECT * FROM Login_info");
+            // SQLRequest.SelectAllLogin_info(connection, "SELECT * FROM Login_info");
         }
         catch (Exception ex)
         {
             Console.WriteLine("Wrong request: " + ex.Message);
         }
-
+        
         try
         {
             // Fermer la connection avec la base de données
@@ -83,24 +71,122 @@ class Program
         string param = context.Request.Url.Query;
         NameValueCollection parameters = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
         
-        // Mise en forme de la réponse.
+        // Execution de la requête et mise en forme de la réponse.
         switch (split_path[0])
         {
             case "/":
                 responseString = "Hello, this is the home page!";
                 break;
-            case "/post":
-                if (context.Request.HttpMethod == "POST")
+            case "/select":
+                if (context.Request.HttpMethod == "GET")
                 {
                     try
                     {
                         switch (split_path[1])
                         {
-                            case "/test":
-                                responseString = "Vous êtes sur la page /post/test";
+                            case "/user":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = "Vous êtes sur la page /select/user/by_id. Voici l'utilisateur correspondant à l'identifiant donné.\n     param: id";
+                                            break;
+                                        case "/by_name":
+                                            responseString = "Vous êtes sur la page /select/user/by_name. Voici l'utilisateur correspondant au nom donné.\n     param: name";
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = "Vous êtes sur la page /select/user. Voici la liste de tous les utilisateurs.";
+                                }
                                 break;
-                            case "/bdd":
-                                responseString = "Vous êtes sur la page /post/bdd";
+                            case "/item":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = "Vous êtes sur la page /select/item/by_id. Voici le produit correspondant à l'identifiant donnée.\n     param: id";
+                                            break;
+                                        case "/by_name":
+                                            responseString = "Vous êtes sur la page /select/item/by_name. Voici le produit correspondant au nom donnée.\n     param: name";
+                                            break;
+                                        case "/by_price":
+                                            responseString = "Vous êtes sur la page /select/item/by_price. Voici les correspondant à la fourchette de prix donnée.\n     param: price, option";
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = "Vous êtes sur la page /select/item. Voici la liste de tous les produits.";
+                                }
+                                break;
+                            case "/commands":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = "Vous êtes sur la page /select/commands/by_id. Voici la commande correspondant à l'identifiant donnée.\n     param: id";
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = "Vous êtes sur la page /select/commands. Voici la liste de toutes les commandes.";
+                                }
+                                break;
+                            case "/cart":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = "Vous êtes sur la page /select/cart/by_id. Voici le panier correspondant à l'identifiant donnée.\n     param: id";
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = "Vous êtes sur la page /select/cart. Voici la liste de tous les paniers.";
+                                }
+                                break;
+                            case "/invoice":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = "Vous êtes sur la page /select/invoice/by_id. Voici la facture correspondant à l'identifiant donnée.\n     param: id";
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = "Vous êtes sur la page /select/invoices. Voici la liste de toutes les factures.";
+                                }
                                 break;
                             default:
                                 responseString = "404 - Not Found";
@@ -109,12 +195,7 @@ class Program
                         }
                     }catch (Exception e)
                     {
-                        using (var reader = new StreamReader(context.Request.InputStream,
-                                   context.Request.ContentEncoding))
-                        {
-                            string requestBody = reader.ReadToEnd();
-                            responseString = $"You posted: {requestBody}";
-                        }
+                        responseString = "Vous êtes sur la page /select. Voici les différentes possibilitée de selection.";
                     }
                 }
                 else
@@ -122,13 +203,98 @@ class Program
                     responseString = "Invalid request method for this endpoint.";
                 }
                 break;
-            case "/get":
-                if (context.Request.HttpMethod == "GET")
+            case "/insert":
+                if (context.Request.HttpMethod == "POST")
                 {
-                    using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+                    try
                     {
-                        string requestBody = reader.ReadToEnd();
-                        responseString = $"You get: {requestBody}";
+                        switch (split_path[1])
+                        {
+                            case "/user":
+                                responseString = "Vous êtes sur la page /insert/user. Vous pouvez  créer un nouvel utilisateur avec les paramètres:\n   - name\n    - mail\n    - password.";
+                                break;
+                            case "/item":
+                                responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";
+                                break;
+                            case "/adresse":
+                                responseString = "Vous êtes sur la page /insert/adresse. Vous pouvez ajouter une nouvelle adresse lié à un utilisateur avec les paramètres:\n   - username\n    - street\n    - city\n  - cp\n  - state\n   - country.";                                                                         
+                                break;
+                            case "/picture":
+                                responseString = "Vous êtes sur la page /insert/picture. Vous pouvez ajouter une nouvelle photo lié à un utilisateur avec les paramètres:\n   - username\n    - picture.";
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée d'insertion.";
+                    }
+                }
+                else
+                {
+                    responseString = "Invalid request method for this endpoint.";
+                }
+                break;
+            case "/update":
+                if (context.Request.HttpMethod == "POST")
+                {
+                    try
+                    {
+                        switch (split_path[1])
+                        {
+                            case "/username":
+                                responseString = "Vous êtes sur la page /uptdate/username. Vous pouvez changer votre nom d'utilisateur avec les paramètres:\n    - old_username\n    - new_one.";
+                                break;
+                            case "/item":
+                                responseString = "Vous êtes sur la page /uptdate/item. Vous pouvez changer les élément d'un produit avec les paramètres:\n    - item_name\n   - new_name(opt)\n   - new_price(opt)\n  - new_description(opt)\n    - new_categorie(opt).";                                                     
+                                break;
+                            case "/adresse":
+                                responseString = "Vous êtes sur la page /uptdate/adresse. Vous pouvez changer l'adresse d'un utilisateur avec les paramètres:\n     - username\n    - street(opt)\n    - city(opt)\n  - cp(opt)\n  - state(opt)\n   - country(opt).";                                                                                
+                                break;
+                            case "/picture":
+                                responseString = "Vous êtes sur la page /uptdate/picture. Vous pouvez changer la photo d'un utilisateur avec les paramètres:\n      - username/product_name\n    - new_picture";
+                                break;
+                            case "/cart":
+                                responseString = "Vous êtes sur la page /uptdate/cart. Vous pouvez changer la composition de votre panier avec les paramètres:\n    - username\n    - item_name\n   - option.";
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée d'amélioration.";
+                    }
+                }
+                else
+                {
+                    responseString = "Invalid request method for this endpoint.";
+                }
+                break;
+            case "/delete":
+                if (context.Request.HttpMethod == "POST")
+                {
+                    try
+                    {
+                        switch (split_path[1])
+                        {
+                            case "/user":
+                                responseString = "Vous êtes sur la page /select/user. Vous pouvez supprimer un utilisateur avec les paramètres:\n   - username.";
+                                break;
+                            case "/item":
+                                responseString = "Vous êtes sur la page /select/item. Vous pouvez supprimer un item avec les paramètres:\n   - item_name.";
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée de suppression.";
                     }
                 }
                 else
@@ -141,32 +307,12 @@ class Program
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
         }
+        
+        // Envoie de la réponse.
         byte[] buffer = Encoding.UTF8.GetBytes(responseString);
         context.Response.ContentLength64 = buffer.Length;
         Stream output = context.Response.OutputStream;
         output.Write(buffer, 0, buffer.Length);
         output.Close();
     }
-    
-    static void SelectAllLogin_info(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        Console.WriteLine("Colonne1: Id, Colonne2: mail, Colonne3: Password");
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne3: {reader["Password"]}");
-        }
-    }
-
-    static void ExecuteNonQuery(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        int rowsAffected = command.ExecuteNonQuery();
-        Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
-    }
 }
-
-// /select
-//          /user
