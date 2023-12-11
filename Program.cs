@@ -12,27 +12,6 @@ class Program
     {
         // Connection à la base de données
         SQLiteConnection connection = SQLRequest.openSqLiteConnection();
-
-        try
-        {
-            // Exemple de requête SELECT ALL
-            // SQLRequest.SelectAllLogin_info(connection, "SELECT * FROM Login_info");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Wrong request: " + ex.Message);
-        }
-        
-        try
-        {
-            // Fermer la connection avec la base de données
-            connection.Close();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Impossible to close connection: " + e.Message);
-            throw;
-        }
         
         // Création de l'api en localhost sur le port 8080
         string url = "http://localhost:8080/";
@@ -45,11 +24,11 @@ class Program
         while (true)
         {
             var context = await listener.GetContextAsync();
-            ProcessRequest(context);
+            ProcessRequest(context, connection);
         }
     }
     
-    static void ProcessRequest(HttpListenerContext context)
+    static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)
     {
         string responseString = ""; // tkt
 
@@ -69,8 +48,12 @@ class Program
         
         // Récupération des paramètres et mise en forme (?test=123&aze=aze)
         string param = context.Request.Url.Query;
-        NameValueCollection parameters = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
-        
+        NameValueCollection paramet = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
+        NameValueCollection parameters = new NameValueCollection();;
+        foreach (String key in paramet)
+        {
+            parameters.Add(key, paramet[key].Replace("+", " "));
+        }
         // Execution de la requête et mise en forme de la réponse.
         switch (split_path[0])
         {
@@ -90,10 +73,10 @@ class Program
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = "Vous êtes sur la page /select/user/by_id. Voici l'utilisateur correspondant à l'identifiant donné.\n     param: id";
+                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Id = " + parameters["id"] + ";");
                                             break;
                                         case "/by_name":
-                                            responseString = "Vous êtes sur la page /select/user/by_name. Voici l'utilisateur correspondant au nom donné.\n     param: name";
+                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Name = '" + parameters["name"] + "';");
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -103,22 +86,38 @@ class Program
                                 }
                                 catch (Exception e)
                                 {
-                                    responseString = "Vous êtes sur la page /select/user. Voici la liste de tous les utilisateurs.";
+                                    // Exemple de requête SELECT ALL User
+                                    responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User");
                                 }
                                 break;
                             case "/item":
+                                Console.Write("/item");
                                 try
                                 {
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = "Vous êtes sur la page /select/item/by_id. Voici le produit correspondant à l'identifiant donnée.\n     param: id";
+                                            // responseString = "Vous êtes sur la page /select/item/by_id. Voici le produit correspondant à l'identifiant donnée.\n     param: id";
+                                            responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Id = '" + parameters["id"] + "';");
                                             break;
                                         case "/by_name":
-                                            responseString = "Vous êtes sur la page /select/item/by_name. Voici le produit correspondant au nom donnée.\n     param: name";
+                                            // responseString = "Vous êtes sur la page /select/item/by_name. Voici le produit correspondant au nom donnée.\n     param: name";
+                                            responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Name = '" + parameters["name"] + "';");
                                             break;
                                         case "/by_price":
-                                            responseString = "Vous êtes sur la page /select/item/by_price. Voici les correspondant à la fourchette de prix donnée.\n     param: price, option";
+                                            // responseString = "Vous êtes sur la page /select/item/by_price. Voici les correspondant à la fourchette de prix donnée.\n     param: price, option";
+                                            if (parameters["option"] == "eq")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price = '" + parameters["price"] + "';");
+                                            }
+                                            else if (parameters["option"] == "up")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price > '" + parameters["price"] + "';");
+                                            }
+                                            else if (parameters["option"] == "down")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price < '" + parameters["price"] + "';");
+                                            }
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -128,7 +127,8 @@ class Program
                                 }
                                 catch (Exception e)
                                 {
-                                    responseString = "Vous êtes sur la page /select/item. Voici la liste de tous les produits.";
+                                    // Exemple de requête SELECT ALL Item
+                                    responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items");
                                 }
                                 break;
                             case "/commands":
