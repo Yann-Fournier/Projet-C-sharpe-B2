@@ -91,7 +91,6 @@ class Program
                                 }
                                 break;
                             case "/item":
-                                Console.Write("/item");
                                 try
                                 {
                                     switch (split_path[2])
@@ -137,7 +136,8 @@ class Program
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = "Vous êtes sur la page /select/commands/by_id. Voici la commande correspondant à l'identifiant donnée.\n     param: id";
+                                            // responseString = "Vous êtes sur la page /select/commands/by_id. Voici la commande correspondant à l'identifiant donnée.\n     param: id";
+                                            responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands WHERE Id = '" + parameters["id"] + "';");
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -147,7 +147,8 @@ class Program
                                 }
                                 catch (Exception e)
                                 {
-                                    responseString = "Vous êtes sur la page /select/commands. Voici la liste de toutes les commandes.";
+                                    // responseString = "Vous êtes sur la page /select/commands. Voici la liste de toutes les commandes.";
+                                    responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands");
                                 }
                                 break;
                             case "/cart":
@@ -156,7 +157,8 @@ class Program
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = "Vous êtes sur la page /select/cart/by_id. Voici le panier correspondant à l'identifiant donnée.\n     param: id";
+                                            // responseString = "Vous êtes sur la page /select/cart/by_id. Voici le panier correspondant à l'identifiant donnée.\n     param: id";
+                                            responseString = SQLRequest.SelectCart(connection, "SELECT * FROM  Cart WHERE Id = '" + parameters["id"] + "';");
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -166,7 +168,8 @@ class Program
                                 }
                                 catch (Exception e)
                                 {
-                                    responseString = "Vous êtes sur la page /select/cart. Voici la liste de tous les paniers.";
+                                    // responseString = "Vous êtes sur la page /select/cart. Voici la liste de tous les paniers.";
+                                    responseString = SQLRequest.SelectCart(connection, "SELECT * FROM  Cart");
                                 }
                                 break;
                             case "/invoice":
@@ -175,7 +178,8 @@ class Program
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = "Vous êtes sur la page /select/invoice/by_id. Voici la facture correspondant à l'identifiant donnée.\n     param: id";
+                                            // responseString = "Vous êtes sur la page /select/invoice/by_id. Voici la facture correspondant à l'identifiant donnée.\n     param: id";
+                                            responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM  Invoice WHERE Id = '" + parameters["id"] + "';");
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -185,7 +189,9 @@ class Program
                                 }
                                 catch (Exception e)
                                 {
-                                    responseString = "Vous êtes sur la page /select/invoices. Voici la liste de toutes les factures.";
+                                    Console.WriteLine("Invoices");
+                                    // responseString = "Vous êtes sur la page /select/invoices. Voici la liste de toutes les factures.";
+                                    responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM  Invoice;");
                                 }
                                 break;
                             default:

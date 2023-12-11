@@ -40,34 +40,6 @@ public class SQLRequest
         return response;
     }
     
-    public static String SelectUserById(SQLiteConnection connection, string query)
-    {
-        String response = "";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            String s = $"Id: {reader["Id"]}, Name: {reader["Name"]}, Login_info: {reader["Login_info"]}, Address: {reader["Address"]}, Photo: {reader["Photo"]}, Commands: {reader["Commands"]}, Cart: {reader["Cart"]}, Invoices: {reader["Invoices"]}, Prefer_payment: {reader["Prefer_payment"]}, Rating: {reader["Rating"]}\n";
-            response = response + s;
-        }
-        return response;
-    }
-    
-    public static String SelectUserByName(SQLiteConnection connection, string query)
-    {
-        String response = "";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            String s = $"Id: {reader["Id"]}, Name: {reader["Name"]}, Login_info: {reader["Login_info"]}, Address: {reader["Address"]}, Photo: {reader["Photo"]}, Commands: {reader["Commands"]}, Cart: {reader["Cart"]}, Invoices: {reader["Invoices"]}, Prefer_payment: {reader["Prefer_payment"]}, Rating: {reader["Rating"]}\n";
-            response = response + s;
-        }
-        return response;
-    }
-    
     // SELECT Items -----------------------------------------------------------------------------------------------------------------
     public static String SelectItems(SQLiteConnection connection, string query)
     {
@@ -78,6 +50,51 @@ public class SQLRequest
         {
             // Traitement des résultats de la requête SELECT
             String s = $"{reader["Id"]}, {reader["Name"]}, {reader["Price"]}, {reader["Description"]}, {reader["Photo"]}, {reader["Category"]}, {reader["Seller"]}, {reader["Rating"]}\n";
+            response = response + s;
+        }
+        return response;
+    }
+    
+    // SELECT Commands -----------------------------------------------------------------------------------------------------------------
+    public static String SelectCommands(SQLiteConnection connection, string query)
+    {
+        String response = "Id, Command\n";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            String s = $"{reader["Id"]}, {reader["Command"]}\n";
+            response = response + s;
+        }
+        return response;
+    }
+    
+    // SELECT Cart -----------------------------------------------------------------------------------------------------------------
+    public static String SelectCart(SQLiteConnection connection, string query)
+    {
+        String response = "Id, Items\n";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            String s = $"{reader["Id"]}, {reader["Items"]}\n";
+            response = response + s;
+        }
+        return response;
+    }
+    
+    // SELECT Cart -----------------------------------------------------------------------------------------------------------------
+    public static String SelectInvoice(SQLiteConnection connection, string query)
+    {
+        String response = "Id, Cart, Date, Payment\n";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            String s = $"{reader["Id"]}, {reader["Cart"]}, {reader["Date"]}, {reader["Payement"]}\n";
             response = response + s;
         }
         return response;
