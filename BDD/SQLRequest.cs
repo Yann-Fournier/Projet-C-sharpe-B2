@@ -88,28 +88,16 @@ public class SQLRequest
     // SELECT Cart -----------------------------------------------------------------------------------------------------------------
     public static String SelectInvoice(SQLiteConnection connection, string query)
     {
-        String response = "Id, Cart, Date, Payment\n";
+        String response = "Id, Invoice\n";
         SQLiteCommand command = new SQLiteCommand(query, connection);
         SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
-            String s = $"{reader["Id"]}, {reader["Cart"]}, {reader["Date"]}, {reader["Payement"]}\n";
+            String s = $"{reader["Id"]}, {reader["Invoice"]}\n";
             response = response + s;
         }
         return response;
-    }
-    
-    public static void SelectAllLogin_info(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        Console.WriteLine("Colonne1: Id, Colonne2: mail, Colonne3: Password");
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne3: {reader["Password"]}");
-        }
     }
 
     public static void ExecuteNonQuery(SQLiteConnection connection, string query)

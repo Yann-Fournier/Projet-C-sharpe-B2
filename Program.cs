@@ -171,7 +171,7 @@ class Program
                                     switch (split_path[2])
                                     {
                                         case "/by_id":
-                                            responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoice WHERE Id = '" + parameters["id"] + "';");
+                                            responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices WHERE Id = '" + parameters["id"] + "';");
                                             break;
                                         default:
                                             responseString = "404 - Not Found";
@@ -182,7 +182,7 @@ class Program
                                 catch (Exception e)
                                 {
                                     Console.WriteLine("Invoices");
-                                    responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoice;");
+                                    responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices;");
                                 }
                                 break;
                             default:
