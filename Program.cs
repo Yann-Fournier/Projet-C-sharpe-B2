@@ -208,7 +208,8 @@ class Program
                         switch (split_path[1])
                         {
                             case "/user":
-                                responseString = "Vous êtes sur la page /insert/user. Vous pouvez  créer un nouvel utilisateur avec les paramètres:\n   - name\n    - mail\n    - password.";
+                                // responseString = "Vous êtes sur la page /insert/user. Vous pouvez  créer un nouvel utilisateur avec les paramètres:\n   - name\n    - mail\n    - password.";
+                                responseString = SQLRequest.InsertUser(connection, parameters);
                                 break;
                             case "/item":
                                 responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";

@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
-using System.Globalization;
+using System.Collections.Specialized;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace BDD;
 
@@ -100,6 +101,127 @@ public class SQLRequest
         return response;
     }
 
+    // Insert User -----------------------------------------------------------------------------------------------------------------
+    public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
+    {
+        // 3 count à récupérer (user, photo, rating)
+        int countUser = CountLine(connection, "User", "Id") + 9;
+        int countPhoto = CountLine(connection, "Photo", "Id") + 1;
+        int countRating = CountLine(connection, "Rating", "Id") + 1 ;
+        
+        // Querys
+        string queryUser = "INSERT INTO User (Id, Name, Login_info, Address, Photo, Commands, Cart, Invoices, Prefer_payment, Rating) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6, @Val7, @Val8, @Val9, @Val10)";
+        string queryLoginInfo = "INSERT INTO Login_info (Id, mail, Password) VALUES (@Val1, @Val2, @Val3)";
+        string queryAddress = "INSERT INTO Address (Id, Street, City, CP, State, Country) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6)";
+        string queryPhoto = "INSERT INTO Photo (Id, Link) VALUES (@Val1, @Val2)";
+        string queryCommands = "INSERT INTO Commands (Id, Command) VALUES (@Val1, @Val2)";
+        string queryCart = "INSERT INTO Cart (Id, Items) VALUES (@Val1, @Val2)";
+        string queryInvoices = "INSERT INTO Invoices (Id, Invoice) VALUES (@Val1, @Val2)";
+        string queryPreferPayement = "INSERT INTO Prefer_payment (Id, Payment) VALUES (@Val1, @Val2)";
+        string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryLoginInfo, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", parameters["mail"]);
+            command.Parameters.AddWithValue("@Val3", parameters["password"]);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        using (SQLiteCommand command = new SQLiteCommand(queryAddress, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", "");
+            command.Parameters.AddWithValue("@Val3", "");
+            command.Parameters.AddWithValue("@Val4", 0);
+            command.Parameters.AddWithValue("@Val5", "");
+            command.Parameters.AddWithValue("@Val6", "");
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryPhoto, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countPhoto);
+            command.Parameters.AddWithValue("@Val2", "");
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryCommands, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", 2);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryCart, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", 5);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryInvoices, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", 5);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryPreferPayement, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", 0);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryRating, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countRating);
+            command.Parameters.AddWithValue("@Val2", 3);
+            command.Parameters.AddWithValue("@Val3", 0);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryUser, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1",countUser);
+            command.Parameters.AddWithValue("@Val2",parameters["name"]);
+            command.Parameters.AddWithValue("@Val3", countUser);
+            command.Parameters.AddWithValue("@Val4", countUser);
+            command.Parameters.AddWithValue("@Val5", countPhoto);
+            command.Parameters.AddWithValue("@Val6", countUser);
+            command.Parameters.AddWithValue("@Val7", countUser);
+            command.Parameters.AddWithValue("@Val8", countUser);
+            command.Parameters.AddWithValue("@Val9", countUser);
+            command.Parameters.AddWithValue("@Val10", countRating);
+            int rowsAffected = command.ExecuteNonQuery();// Exécution de la commande SQL
+        }
+        
+        // string query = "INSERT INTO User (" + countUser.ToString() + ", "+ parameters["name"] + "," + parameters["name"] + "")";
+        // SQLiteCommand command = new SQLiteCommand(query, connection);
+        return "Nombre de lignes affectées : 9";
+    }
+
+    private static int CountLine(SQLiteConnection connection, string table, string column)
+    {
+        SQLiteCommand commandUser = new SQLiteCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
+        SQLiteDataReader readerUser = commandUser.ExecuteReader();
+        // Traitement des résultats de la requête SELECT
+        while (readerUser.Read())
+        {
+            int count = Convert.ToInt32(readerUser[0]);
+            return count;
+        }
+        return -1; // Au cas ou ça plante ...
+    }
     public static void ExecuteNonQuery(SQLiteConnection connection, string query)
     {
         SQLiteCommand command = new SQLiteCommand(query, connection);
@@ -107,24 +229,3 @@ public class SQLRequest
         Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
     }
 }
-
-// try
-// {
-//     // Exemple de requête SELECT ALL
-//     SQLRequest.SelectAllLogin_info(connection, "SELECT * FROM Login_info");
-// }
-// catch (Exception ex)
-// {
-//     Console.WriteLine("Wrong request: " + ex.Message);
-// }
-
-// try
-// {
-//     // Fermer la connection avec la base de données
-//     connection.Close();
-// }
-// catch (Exception e)
-// {
-//     Console.WriteLine("Impossible to close connection: " + e.Message);
-//     throw;
-// }

@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS Command
     FOREIGN KEY (Items) REFERENCES Items (Id)
 );
 
+/* enlever le NOT NULL pour Items: Un panier peut être vide */
 CREATE TABLE IF NOT EXISTS Cart
 (
     Id    INT NOT NULL,
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS Cart
     FOREIGN KEY (Items) REFERENCES Items (Id)
 );
 
+/* Enlever le NOT NULL de Invoice: peu ne pas avoir fait de commande encore*/
 CREATE TABLE IF NOT EXISTS Invoices
 (
     Id      INT NOT NULL,
