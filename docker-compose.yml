@@ -2,26 +2,27 @@ version: '3'
 
 services:
   web:
+    build: ./WEB/
     image: albericwalsh/ecommerce:WEB-ecommerce
     container_name: server_ecomerce_web
     ports:
       # local:container
       - "80:80"
-    build: ./WEB
     depends_on:
       - db
 
   db:
-    build: ./BDD
+    build: ./BDD/
     image: albericwalsh/ecommerce:BDD-ecomerce
     container_name: server_ecomerce_bdd
+    command: 
     ports:
       - "3306:3306"
     volumes:
       # Volume de la base de données
       - ./db-data:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: database.sqlite
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "database"
+    # docker-entrypoint-initdb:
+    #   command: ["mysqld", "--initialize-insecure"]
