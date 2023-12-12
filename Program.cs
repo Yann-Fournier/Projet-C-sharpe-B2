@@ -1,53 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Collections.Specialized;
+
 using System.Web;
+using BDD; // Notre bibliothèque de requêtes SQL.
 
 class Program
 {
     static async Task Main(string[] args)
     {
         // Connection à la base de données
-        // Data Source = chemin de la database
-        string absolutePath = @"..\..\..\BDD\database.sqlite";
-        string connectionString = $"Data Source={absolutePath};Version=3;";
-        // Creation de la connection
-        SQLiteConnection connection = new SQLiteConnection(connectionString);
-        try
-        {
-            // Ouvrir la connection avec la base de données
-            connection.Open();
-            Console.WriteLine("Connexion réussie à la base de données SQLite!");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Erreur de connexion: " + ex.Message);
-        }
-
-        try
-        {
-            // Exemple de requête SELECT ALL
-            // SelectAllLogin_info(connection, "SELECT * FROM Login_info");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Wrong request: " + ex.Message);
-        }
-
-        try
-        {
-            // Fermer la connection avec la base de données
-            connection.Close();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Impossible to close connection: " + e.Message);
-            throw;
-        }
+        SQLiteConnection connection = SQLRequest.openSqLiteConnection();
         
         // Création de l'api en localhost sur le port 8080
         string url = "http://localhost:8080/";
@@ -60,11 +24,11 @@ class Program
         while (true)
         {
             var context = await listener.GetContextAsync();
-            ProcessRequest(context);
+            ProcessRequest(context, connection);
         }
     }
     
-    static void ProcessRequest(HttpListenerContext context)
+    static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)
     {
         string responseString = ""; // tkt
 
@@ -84,26 +48,145 @@ class Program
         
         // Récupération des paramètres et mise en forme (?test=123&aze=aze)
         string param = context.Request.Url.Query;
-        NameValueCollection parameters = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
-        
-        // Mise en forme de la réponse.
+        NameValueCollection paramet = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
+        NameValueCollection parameters = new NameValueCollection();;
+        foreach (String key in paramet)
+        {
+            parameters.Add(key, paramet[key].Replace("+", " "));
+        }
+        // Execution de la requête et mise en forme de la réponse.
         switch (split_path[0])
         {
             case "/":
                 responseString = "Hello, this is the home page!";
                 break;
-            case "/post":
-                if (context.Request.HttpMethod == "POST")
+            case "/select":
+                if (context.Request.HttpMethod == "GET")
                 {
                     try
                     {
                         switch (split_path[1])
                         {
-                            case "/test":
-                                responseString = "Vous êtes sur la page /post/test";
+                            case "/user":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Id = " + parameters["id"] + ";");
+                                            break;
+                                        case "/by_name":
+                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Name = '" + parameters["name"] + "';");
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    // Exemple de requête SELECT ALL User
+                                    responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User");
+                                }
                                 break;
-                            case "/bdd":
-                                responseString = "Vous êtes sur la page /post/bdd";
+                            case "/item":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Id = '" + parameters["id"] + "';");
+                                            break;
+                                        case "/by_name":
+                                            responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Name = '" + parameters["name"] + "';");
+                                            break;
+                                        case "/by_price":
+                                            if (parameters["option"] == "eq")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price = '" + parameters["price"] + "';");
+                                            }
+                                            else if (parameters["option"] == "up")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price > '" + parameters["price"] + "';");
+                                            }
+                                            else if (parameters["option"] == "down")
+                                            {
+                                                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price < '" + parameters["price"] + "';");
+                                            }
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    // Exemple de requête SELECT ALL Item
+                                    responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items");
+                                }
+                                break;
+                            case "/commands":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands WHERE Id = '" + parameters["id"] + "';");
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands");
+                                }
+                                break;
+                            case "/cart":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = SQLRequest.SelectCart(connection, "SELECT * FROM  Cart WHERE Id = '" + parameters["id"] + "';");
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    responseString = SQLRequest.SelectCart(connection, "SELECT * FROM  Cart");
+                                }
+                                break;
+                            case "/invoice":
+                                try
+                                {
+                                    switch (split_path[2])
+                                    {
+                                        case "/by_id":
+                                            responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices WHERE Id = '" + parameters["id"] + "';");
+                                            break;
+                                        default:
+                                            responseString = "404 - Not Found";
+                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                            break;
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("Invoices");
+                                    responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices;");
+                                }
+                                break;
+                            case "/category":
+                                responseString = SQLRequest.SelectCategory(connection, "SELECT * FROM Category;");
                                 break;
                             default:
                                 responseString = "404 - Not Found";
@@ -112,12 +195,7 @@ class Program
                         }
                     }catch (Exception e)
                     {
-                        using (var reader = new StreamReader(context.Request.InputStream,
-                                   context.Request.ContentEncoding))
-                        {
-                            string requestBody = reader.ReadToEnd();
-                            responseString = $"You posted: {requestBody}";
-                        }
+                        responseString = "Vous êtes sur la page /select. Voici les différentes possibilitée de selection.";
                     }
                 }
                 else
@@ -125,13 +203,94 @@ class Program
                     responseString = "Invalid request method for this endpoint.";
                 }
                 break;
-            case "/get":
-                if (context.Request.HttpMethod == "GET")
+            case "/insert":
+                if (context.Request.HttpMethod == "POST")
                 {
-                    using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+                    try
                     {
-                        string requestBody = reader.ReadToEnd();
-                        responseString = $"You get: {requestBody}";
+                        switch (split_path[1])
+                        {
+                            case "/user":
+                                // responseString = "Vous êtes sur la page /insert/user. Vous pouvez  créer un nouvel utilisateur avec les paramètres:\n   - name\n    - mail\n    - password.";
+                                responseString = SQLRequest.InsertUser(connection, parameters);
+                                break;
+                            case "/item":
+                                // responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";
+                                responseString = SQLRequest.InsertItem(connection, parameters);
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée d'insertion.";
+                    }
+                }
+                else
+                {
+                    responseString = "Invalid request method for this endpoint.";
+                }
+                break;
+            case "/update":
+                if (context.Request.HttpMethod == "POST")
+                {
+                    try
+                    {
+                        switch (split_path[1])
+                        {
+                            case "/username":
+                                responseString = "Vous êtes sur la page /uptdate/username. Vous pouvez changer votre nom d'utilisateur avec les paramètres:\n    - old_username\n    - new_one.";
+                                break;
+                            case "/item":
+                                responseString = "Vous êtes sur la page /uptdate/item. Vous pouvez changer les élément d'un produit avec les paramètres:\n    - item_name\n   - new_name(opt)\n   - new_price(opt)\n  - new_description(opt)\n    - new_categorie(opt).";                                                     
+                                break;
+                            case "/adresse":
+                                responseString = "Vous êtes sur la page /uptdate/adresse. Vous pouvez changer l'adresse d'un utilisateur avec les paramètres:\n     - username\n    - street(opt)\n    - city(opt)\n  - cp(opt)\n  - state(opt)\n   - country(opt).";                                                                                
+                                break;
+                            case "/picture":
+                                responseString = "Vous êtes sur la page /uptdate/picture. Vous pouvez changer la photo d'un utilisateur avec les paramètres:\n      - username/product_name\n    - new_picture";
+                                break;
+                            case "/cart":
+                                responseString = "Vous êtes sur la page /uptdate/cart. Vous pouvez changer la composition de votre panier avec les paramètres:\n    - username\n    - item_name\n   - option.";
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée d'amélioration.";
+                    }
+                }
+                else
+                {
+                    responseString = "Invalid request method for this endpoint.";
+                }
+                break;
+            case "/delete":
+                if (context.Request.HttpMethod == "POST")
+                {
+                    try
+                    {
+                        switch (split_path[1])
+                        {
+                            case "/user":
+                                responseString = "Vous êtes sur la page /select/user. Vous pouvez supprimer un utilisateur avec les paramètres:\n   - username.";
+                                break;
+                            case "/item":
+                                responseString = "Vous êtes sur la page /select/item. Vous pouvez supprimer un item avec les paramètres:\n   - item_name.";
+                                break;
+                            default:
+                                responseString = "404 - Not Found";
+                                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                                break;
+                        }
+                    }catch (Exception e)
+                    {
+                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée de suppression.";
                     }
                 }
                 else
@@ -144,30 +303,12 @@ class Program
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 break;
         }
+        
+        // Envoie de la réponse.
         byte[] buffer = Encoding.UTF8.GetBytes(responseString);
         context.Response.ContentLength64 = buffer.Length;
         Stream output = context.Response.OutputStream;
         output.Write(buffer, 0, buffer.Length);
         output.Close();
     }
-    
-    static void SelectAllLogin_info(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        Console.WriteLine("Colonne1: Id, Colonne2: mail, Colonne3: Password");
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            Console.WriteLine($"Colonne1: {reader["Id"]}, Colonne2: {reader["mail"]}, Colonne3: {reader["Password"]}");
-        }
-    }
-
-    static void ExecuteNonQuery(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        int rowsAffected = command.ExecuteNonQuery();
-        Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
-    }
 }
-
