@@ -104,7 +104,7 @@ public class SQLRequest
     // Insert User -----------------------------------------------------------------------------------------------------------------
     public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
     {
-        // 3 count à récupérer (user, photo, rating)
+        // Récupération des Id avec un COUNT() 
         int countUser = CountLine(connection, "User", "Id") + 9;
         int countPhoto = CountLine(connection, "Photo", "Id") + 1;
         int countRating = CountLine(connection, "Rating", "Id") + 1 ;
@@ -120,6 +120,7 @@ public class SQLRequest
         string queryPreferPayement = "INSERT INTO Prefer_payment (Id, Payment) VALUES (@Val1, @Val2)";
         string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
         
+        // Execution des Querys ----------------------------------------------------------------------------------
         using (SQLiteCommand command = new SQLiteCommand(queryLoginInfo, connection))
         {
             // Ajout des paramètres avec leurs valeurs
@@ -204,9 +205,6 @@ public class SQLRequest
             command.Parameters.AddWithValue("@Val10", countRating);
             int rowsAffected = command.ExecuteNonQuery();// Exécution de la commande SQL
         }
-        
-        // string query = "INSERT INTO User (" + countUser.ToString() + ", "+ parameters["name"] + "," + parameters["name"] + "")";
-        // SQLiteCommand command = new SQLiteCommand(query, connection);
         return "Nombre de lignes affectées : 9";
     }
 
@@ -214,18 +212,12 @@ public class SQLRequest
     {
         SQLiteCommand commandUser = new SQLiteCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
         SQLiteDataReader readerUser = commandUser.ExecuteReader();
-        // Traitement des résultats de la requête SELECT
         while (readerUser.Read())
         {
+            // Traitement des résultats de la requête SELECT
             int count = Convert.ToInt32(readerUser[0]);
             return count;
         }
         return -1; // Au cas ou ça plante ...
-    }
-    public static void ExecuteNonQuery(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        int rowsAffected = command.ExecuteNonQuery();
-        Console.WriteLine($"Nombre de lignes affectées : {rowsAffected}");
     }
 }
