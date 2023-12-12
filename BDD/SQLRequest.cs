@@ -232,7 +232,7 @@ public class SQLRequest
             command.Parameters.AddWithValue("@Val10", countRating);
             int rowsAffected = command.ExecuteNonQuery();// Exécution de la commande SQL
         }
-        return "Nombre de lignes affectées : 9";
+        return "Cette utilisateur à bien été ajouter";
     }
 
     public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters)
@@ -241,13 +241,31 @@ public class SQLRequest
         int countItems = CountLine(connection, "Items", "Id") + 1;
         int countPhoto = CountLine(connection, "Photo", "Id") + 1 ;
         int countRating = CountLine(connection, "Rating", "Id") + 1 ;
-        int idSeller = SelectUserId(connection, "SELECT Id FROM USER WHERE Name = " + parameters["username"]+";");
+        int idSeller = SelectUserId(connection, "SELECT * FROM  User WHERE Name = '" + parameters["username"] + "';");
         
         // Querys
-        string queryAddress = "INSERT INTO Items (Id, Name, Price, Description, Photo, Category, Seller, Rating) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6, @Val7, @Val8)";
-        // http://localhost:8080/insert/item?username=Yann&product_name=One%20piece%20tome%20100&id_category=20&price=8&description=C%27est%20le%20centieme%20tome%20de%20la%20serie%20One%20piece
+        string queryItems = "INSERT INTO Items (Id, Name, Price, Description, Photo, Category, Seller, Rating) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6, @Val7, @Val8)";
+        string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
+        string queryPhoto = "INSERT INTO Photo (Id, Link) VALUES (@Val1, @Val2)";
+        
         // Execution des Querys ----------------------------------------------------------------------------------
-        using (SQLiteCommand command = new SQLiteCommand(queryAddress, connection))
+        using (SQLiteCommand command = new SQLiteCommand(queryPhoto, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countPhoto);
+            command.Parameters.AddWithValue("@Val2", "");
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        using (SQLiteCommand command = new SQLiteCommand(queryRating, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countRating);
+            command.Parameters.AddWithValue("@Val2", 3);
+            command.Parameters.AddWithValue("@Val3", 0);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryItems, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countItems);
@@ -256,11 +274,11 @@ public class SQLRequest
             command.Parameters.AddWithValue("@Val4", parameters["description"]);
             command.Parameters.AddWithValue("@Val5", countPhoto);
             command.Parameters.AddWithValue("@Val6", parameters["id_category"]);
-            command.Parameters.AddWithValue("@Val6", idSeller);
-            command.Parameters.AddWithValue("@Val6", countRating);
+            command.Parameters.AddWithValue("@Val7", idSeller);
+            command.Parameters.AddWithValue("@Val8", countRating);
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
-        return "Nombre de lignes affectées : 1";
+        return "Votre Produit à bien été ajouter !!!!!!!!!!!!!!!!!";
     }
     
     private static int CountLine(SQLiteConnection connection, string table, string column)
