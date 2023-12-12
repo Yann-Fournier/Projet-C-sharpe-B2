@@ -41,19 +41,6 @@ public class SQLRequest
         return response;
     }
     
-    public static int SelectUserId(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            int id = Convert.ToInt32(reader[0]);
-            return id;
-        }
-        return 0;
-    }
-    
     // SELECT Items -----------------------------------------------------------------------------------------------------------------
     public static String SelectItems(SQLiteConnection connection, string query)
     {
@@ -234,7 +221,8 @@ public class SQLRequest
         }
         return "Cette utilisateur à bien été ajouter";
     }
-
+    
+    // Insert Items -----------------------------------------------------------------------------------------------------------------
     public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters)
     {
         // Récupération des Id avec un COUNT() et une autre requete 
@@ -281,6 +269,115 @@ public class SQLRequest
         return "Votre Produit à bien été ajouter !!!!!!!!!!!!!!!!!";
     }
     
+    // Update Username ----------------------------------------------------------------------------------------------------------------------
+    public static void UpdateUsername(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader readerUser = command.ExecuteReader();
+    }
+    
+    // Update Photo ----------------------------------------------------------------------------------------------------------------------
+    public static string UpdatePhoto(SQLiteConnection connection, NameValueCollection parameters)
+    {
+        int idPhoto = 0;
+        if (InCollection(parameters, "username"))
+        {
+            SQLiteCommand command = new SQLiteCommand("SELECT Photo FROM User WHERE Name = '" + parameters["username"] + "';", connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                // Traitement des résultats de la requête SELECT
+                idPhoto = Convert.ToInt32(reader[0]);
+            }
+            SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + parameters["new_picture"] + "' WHERE Id = " + idPhoto +";", connection);
+            SQLiteDataReader readerUpdate = update.ExecuteReader();
+            return $"La photo de {parameters["username"]} à bien été mise à jour.";
+        }
+        else
+        {
+            SQLiteCommand command = new SQLiteCommand("SELECT Photo FROM Items WHERE Name = '" + parameters["product_name"] + "';", connection);
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                // Traitement des résultats de la requête SELECT
+                idPhoto = Convert.ToInt32(reader[0]);
+            }
+            SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + parameters["new_picture"] + "' WHERE Id = " + idPhoto +";", connection);
+            SQLiteDataReader readerUpdate = update.ExecuteReader();
+
+            return $"La photo du {parameters["product_name"]} à bien été mise à jour.";
+        }
+    }
+
+    // Update Cart ----------------------------------------------------------------------------------------------------------------------
+    public static string UpdateCart(SQLiteConnection connection, NameValueCollection parameters)
+    {
+        // Récupération de l'id du panier lié à l'utilisateur
+        int idCart = 0;
+        SQLiteCommand command = new SQLiteCommand("SELECT Cart FROM User WHERE Name = '" + parameters["username"]+ "';", connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            idCart = Convert.ToInt32(reader[0]);
+        }
+
+        // Récupération de l'id du produit
+        int idItem = 0;
+        SQLiteCommand commandItem = new SQLiteCommand("SELECT Id FROM Items WHERE Name = '" + parameters["product_name"]+ "';", connection);
+        SQLiteDataReader readerItem = commandItem.ExecuteReader();
+        while (readerItem.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            idItem = Convert.ToInt32(readerItem[0]);
+        }
+
+        // Execution de la requête en fonction de l'option placé en paramètre.
+        if (parameters["option"] == "add")
+        {
+            using (SQLiteCommand insert = new SQLiteCommand("INSERT INTO Cart (Id, Items) VALUES (@Val1, @Val2)", connection))
+            {
+                // Ajout des paramètres avec leurs valeurs
+                insert.Parameters.AddWithValue("@Val1", idCart);
+                insert.Parameters.AddWithValue("@Val2", idItem);
+                int rowsAffected = insert.ExecuteNonQuery(); // Exécution de la commande SQL
+            }
+            return $"{parameters["product_name"]} à bien été ajouter au panier de {parameters["username"]}";
+        } 
+        else if (parameters["option"] == "del")
+        {
+            SQLiteCommand insert = new SQLiteCommand("DELETE FROM Cart WHERE Id = " + idCart + " AND Items = " + idItem + ";" , connection);
+            int rowsAffected = insert.ExecuteNonQuery(); // Exécution de la commande SQL
+            return $"{parameters["product_name"]} à bien été supprimer du panier de {parameters["username"]}";
+        }
+        return $"Vous avez fait une mauvaise requête.";
+    }
+    
+    // DELETE User ----------------------------------------------------------------------------------------------------------------------
+    public static void DeleteUser(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader readerUser = command.ExecuteReader();
+    }
+    
+    // Delete Item ----------------------------------------------------------------------------------------------------------------------
+    public static void DeleteItem(SQLiteConnection connection, NameValueCollection parameters)
+    {
+        // Faire une select puis delete les Items dans Cart puis l'item lui-même puis sa Photo, puis son Rating. Dans cette ordre
+        // Cart -> Item -> Photo -> Cart.
+        int idItem = 0;
+        int idPhoto = 0;
+        int idRating = 0;
+        SQLiteCommand commandItem = new SQLiteCommand("SELECT * FROM Items WHERE Name = '" + parameters["item_name"]+ "';", connection);
+        SQLiteDataReader readerItem = commandItem.ExecuteReader();
+        while (readerItem.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            idItem = Convert.ToInt32(readerItem[0]);
+        }
+    }
+    
+    // Autre ----------------------------------------------------------------------------------------------------------------------
     private static int CountLine(SQLiteConnection connection, string table, string column)
     {
         SQLiteCommand commandUser = new SQLiteCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
@@ -292,5 +389,30 @@ public class SQLRequest
             return count;
         }
         return -1; // Au cas ou ça plante ...
+    }
+    
+    static int SelectUserId(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            int id = Convert.ToInt32(reader[0]);
+            return id;
+        }
+        return 0;
+    }
+
+    static bool InCollection(NameValueCollection parameters, string chaine)
+    {
+        foreach (var key in parameters.AllKeys)
+        {
+            if (key == chaine)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

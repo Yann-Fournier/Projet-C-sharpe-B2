@@ -211,11 +211,9 @@ class Program
                         switch (split_path[1])
                         {
                             case "/user":
-                                // responseString = "Vous êtes sur la page /insert/user. Vous pouvez  créer un nouvel utilisateur avec les paramètres:\n   - name\n    - mail\n    - password.";
                                 responseString = SQLRequest.InsertUser(connection, parameters);
                                 break;
                             case "/item":
-                                // responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";
                                 responseString = SQLRequest.InsertItem(connection, parameters);
                                 break;
                             default:
@@ -241,7 +239,8 @@ class Program
                         switch (split_path[1])
                         {
                             case "/username":
-                                responseString = "Vous êtes sur la page /uptdate/username. Vous pouvez changer votre nom d'utilisateur avec les paramètres:\n    - old_username\n    - new_one.";
+                                SQLRequest.UpdateUsername(connection, "UPDATE User SET Name = '" + parameters["new_name"] + "' WHERE Name = '" + parameters["old_name"] + "';");
+                                responseString = $"Votre username est maintenant: {parameters["new_name"]}.";
                                 break;
                             case "/item":
                                 responseString = "Vous êtes sur la page /uptdate/item. Vous pouvez changer les élément d'un produit avec les paramètres:\n    - item_name\n   - new_name(opt)\n   - new_price(opt)\n  - new_description(opt)\n    - new_categorie(opt).";                                                     
@@ -249,11 +248,11 @@ class Program
                             case "/adresse":
                                 responseString = "Vous êtes sur la page /uptdate/adresse. Vous pouvez changer l'adresse d'un utilisateur avec les paramètres:\n     - username\n    - street(opt)\n    - city(opt)\n  - cp(opt)\n  - state(opt)\n   - country(opt).";                                                                                
                                 break;
-                            case "/picture":
-                                responseString = "Vous êtes sur la page /uptdate/picture. Vous pouvez changer la photo d'un utilisateur avec les paramètres:\n      - username/product_name\n    - new_picture";
+                            case "/photo":
+                                responseString = SQLRequest.UpdatePhoto(connection, parameters);
                                 break;
                             case "/cart":
-                                responseString = "Vous êtes sur la page /uptdate/cart. Vous pouvez changer la composition de votre panier avec les paramètres:\n    - username\n    - item_name\n   - option.";
+                                responseString = SQLRequest.UpdateCart(connection, parameters);
                                 break;
                             default:
                                 responseString = "404 - Not Found";
@@ -262,7 +261,7 @@ class Program
                         }
                     }catch (Exception e)
                     {
-                        responseString = "Vous êtes sur la page /insert. Voici les différentes possibilitée d'amélioration.";
+                        responseString = "Vous êtes sur la page /update. Voici les différentes possibilitée d'amélioration.";
                     }
                 }
                 else
