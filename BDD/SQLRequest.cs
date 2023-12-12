@@ -147,7 +147,7 @@ public class SQLRequest
         string queryPreferPayement = "INSERT INTO Prefer_payment (Id, Payment) VALUES (@Val1, @Val2)";
         string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
         
-        // Execution des Querys ----------------------------------------------------------------------------------
+        // Execution des Querys
         using (SQLiteCommand command = new SQLiteCommand(queryLoginInfo, connection))
         {
             // Ajout des paramètres avec leurs valeurs
@@ -237,7 +237,7 @@ public class SQLRequest
 
     public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters)
     {
-        // Récupération des Id avec un COUNT() 
+        // Récupération des Id avec un COUNT() et une autre requete 
         int countItems = CountLine(connection, "Items", "Id") + 1;
         int countPhoto = CountLine(connection, "Photo", "Id") + 1 ;
         int countRating = CountLine(connection, "Rating", "Id") + 1 ;
@@ -248,7 +248,7 @@ public class SQLRequest
         string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
         string queryPhoto = "INSERT INTO Photo (Id, Link) VALUES (@Val1, @Val2)";
         
-        // Execution des Querys ----------------------------------------------------------------------------------
+        // Execution des Querys
         using (SQLiteCommand command = new SQLiteCommand(queryPhoto, connection))
         {
             // Ajout des paramètres avec leurs valeurs
