@@ -185,6 +185,9 @@ class Program
                                     responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices;");
                                 }
                                 break;
+                            case "/category":
+                                responseString = SQLRequest.SelectCategory(connection, "SELECT * FROM Category;");
+                                break;
                             default:
                                 responseString = "404 - Not Found";
                                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -212,13 +215,8 @@ class Program
                                 responseString = SQLRequest.InsertUser(connection, parameters);
                                 break;
                             case "/item":
-                                responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";
-                                break;
-                            case "/adresse":
-                                responseString = "Vous êtes sur la page /insert/adresse. Vous pouvez ajouter une nouvelle adresse lié à un utilisateur avec les paramètres:\n   - username\n    - street\n    - city\n  - cp\n  - state\n   - country.";                                                                         
-                                break;
-                            case "/picture":
-                                responseString = "Vous êtes sur la page /insert/picture. Vous pouvez ajouter une nouvelle photo lié à un utilisateur avec les paramètres:\n   - username\n    - picture.";
+                                // responseString = "Vous êtes sur la page /insert/item. Vous pouvez  créer un nouveau produit avec les paramètres:\n   - name\n    - price\n    - description\n   - catégorie.";
+                                responseString = SQLRequest.InsertItem(connection, parameters);
                                 break;
                             default:
                                 responseString = "404 - Not Found";

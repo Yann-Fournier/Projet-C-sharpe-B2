@@ -16,3 +16,5 @@ Projet C# de deuxième année.
 
 ## To Do List
     - Trouver un moyen de vérifier les paramètres,
+    - Rajouter des select (item/by_seller, ...)
+    - Rajouter des insert (item?proprio, ...)

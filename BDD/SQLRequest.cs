@@ -41,6 +41,19 @@ public class SQLRequest
         return response;
     }
     
+    public static int SelectUserId(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            int id = Convert.ToInt32(reader[0]);
+            return id;
+        }
+        return 0;
+    }
+    
     // SELECT Items -----------------------------------------------------------------------------------------------------------------
     public static String SelectItems(SQLiteConnection connection, string query)
     {
@@ -100,7 +113,21 @@ public class SQLRequest
         }
         return response;
     }
-
+    
+    // SELECT Category -----------------------------------------------------------------------------------------------------------------
+    public static String SelectCategory(SQLiteConnection connection, string query)
+    {
+        String response = "Id, Name";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            String s = $"{reader["Id"]}, {reader["Name"]}\n";
+            response = response + s;
+        }
+        return response;
+    }
     // Insert User -----------------------------------------------------------------------------------------------------------------
     public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
     {
@@ -208,6 +235,34 @@ public class SQLRequest
         return "Nombre de lignes affectées : 9";
     }
 
+    public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters)
+    {
+        // Récupération des Id avec un COUNT() 
+        int countItems = CountLine(connection, "Items", "Id") + 1;
+        int countPhoto = CountLine(connection, "Photo", "Id") + 1 ;
+        int countRating = CountLine(connection, "Rating", "Id") + 1 ;
+        int idSeller = SelectUserId(connection, "SELECT Id FROM USER WHERE Name = " + parameters["username"]+";");
+        
+        // Querys
+        string queryAddress = "INSERT INTO Items (Id, Name, Price, Description, Photo, Category, Seller, Rating) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6, @Val7, @Val8)";
+        // http://localhost:8080/insert/item?username=Yann&product_name=One%20piece%20tome%20100&id_category=20&price=8&description=C%27est%20le%20centieme%20tome%20de%20la%20serie%20One%20piece
+        // Execution des Querys ----------------------------------------------------------------------------------
+        using (SQLiteCommand command = new SQLiteCommand(queryAddress, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countItems);
+            command.Parameters.AddWithValue("@Val2", parameters["product_name"]);
+            command.Parameters.AddWithValue("@Val3", parameters["price"]);
+            command.Parameters.AddWithValue("@Val4", parameters["description"]);
+            command.Parameters.AddWithValue("@Val5", countPhoto);
+            command.Parameters.AddWithValue("@Val6", parameters["id_category"]);
+            command.Parameters.AddWithValue("@Val6", idSeller);
+            command.Parameters.AddWithValue("@Val6", countRating);
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        return "Nombre de lignes affectées : 1";
+    }
+    
     private static int CountLine(SQLiteConnection connection, string table, string column)
     {
         SQLiteCommand commandUser = new SQLiteCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
