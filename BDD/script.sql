@@ -1,3 +1,5 @@
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
+
 DROP TABLE IF EXISTS "User";
 DROP TABLE IF EXISTS Login_info;
 DROP TABLE IF EXISTS Address;
