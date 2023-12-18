@@ -7,7 +7,6 @@ produit = eval(input("Entrez un nombre de produit à générer: "))
 user = eval(input("Entrez un nombre d'utilisateur à générer: "))
 payment = eval(input("Entrez un nombre de type de paiement à générer: "))
 
-
 def main():
 
     photo = 0

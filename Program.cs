@@ -10,6 +10,9 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        // Reset database ...
+        SQLRequest.createDatabaseFile();
+        
         // Connection à la base de données
         SQLiteConnection connection = SQLRequest.openSqLiteConnection();
         
@@ -19,13 +22,15 @@ class Program
         listener.Prefixes.Add(url);
         listener.Start();
         Console.WriteLine($"Ecoute sur {url}");
-
-        // Boucle permettant d'ecouter les requêtes
-        while (true)
-        {
-            var context = await listener.GetContextAsync();
-            ProcessRequest(context, connection);
-        }
+        
+        Console.WriteLine(SQLRequest.getHash("Yann"));
+        
+        // // Boucle permettant d'ecouter les requêtes
+        // while (true)
+        // {
+        //     var context = await listener.GetContextAsync();
+        //     ProcessRequest(context, connection);
+        // }
     }
     
     static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)

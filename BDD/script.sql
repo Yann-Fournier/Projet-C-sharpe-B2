@@ -1,5 +1,3 @@
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
-
 DROP TABLE IF EXISTS "User";
 DROP TABLE IF EXISTS Login_info;
 DROP TABLE IF EXISTS Address;
@@ -15,6 +13,7 @@ DROP TABLE IF EXISTS Category;
 DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Prefer_payment;
 DROP TABLE IF EXISTS "Comment";
+DROP Table IF EXISTS Auth;
 
 CREATE TABLE IF NOT EXISTS "Comment"
 (
@@ -52,7 +51,7 @@ CREATE TABLE IF NOT EXISTS Login_info
     Id       INT          NOT NULL,
     mail     VARCHAR(255) NOT NULL,
     Password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (Id)
+    FOREIGN KEY (Id) REFERENCES "User" (Id)
 );
 
 CREATE TABLE IF NOT EXISTS Address
@@ -160,4 +159,11 @@ CREATE TABLE IF NOT EXISTS Prefer_payment
     Payment INT NOT NULL,
     PRIMARY KEY (Id),
     FOREIGN KEY (Payment) REFERENCES Payment (Id)
+);
+
+CREATE TABLE IF NOT EXISTS Auth
+(
+    Id INT NOT NULL,
+    Token VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Id) REFERENCES "User" (Id)
 );

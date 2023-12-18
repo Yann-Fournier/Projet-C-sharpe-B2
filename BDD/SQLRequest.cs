@@ -1,11 +1,42 @@
 ﻿using System.Data.SQLite;
 using System.Collections.Specialized;
-using System.Runtime.InteropServices.JavaScript;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BDD;
 
 public class SQLRequest
 {
+    // Reset Database --------------------------------------------------------------------------------------------------------------------------
+    public static void createDatabaseFile()
+    {
+        string scriptFilePath = @"..\\..\\..\\BDD\\script.sql";
+        string databaseFilePath = @"..\..\..\BDD\database.sqlite";
+
+        if (File.Exists(scriptFilePath))
+        {
+            string script = File.ReadAllText(scriptFilePath);
+
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand(script, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+
+            Console.WriteLine("Base de données créée avec succès.");
+        }
+        else
+        {
+            Console.WriteLine("Le fichier SQL n'existe pas.");
+        }
+    }
+    
+    // Connection à la base de données ------------------------------------------------------------------------------------------------------
     public static SQLiteConnection openSqLiteConnection()
     {
         // Data Source = chemin de la database
@@ -25,7 +56,7 @@ public class SQLRequest
         }
         return connection;
     }
-    
+        
     // SELECT User ----------------------------------------------------------------------------------------------------------------------
     public static String SelectUser(SQLiteConnection connection, string query)
     {
@@ -414,5 +445,22 @@ public class SQLRequest
             }
         }
         return false;
+    }
+
+    public static String getHash(string mdp)
+    {
+        using (SHA1Managed sha256 = new SHA1Managed())
+        {
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(mdp));
+            var sb = new StringBuilder(hash.Length * 2);
+
+            foreach (byte b in hash)
+            {
+                // can be "x2" if you want lowercase
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
     }
 }
