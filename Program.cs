@@ -11,7 +11,7 @@ class Program
     static async Task Main(string[] args)
     {
         // Reset database ...
-        SQLRequest.createDatabaseFile();
+        // SQLRequest.createDatabaseFile();
         
         // Connection à la base de données
         SQLiteConnection connection = SQLRequest.openSqLiteConnection();
@@ -23,14 +23,12 @@ class Program
         listener.Start();
         Console.WriteLine($"Ecoute sur {url}");
         
-        Console.WriteLine(SQLRequest.getHash("Yann"));
-        
-        // // Boucle permettant d'ecouter les requêtes
-        // while (true)
-        // {
-        //     var context = await listener.GetContextAsync();
-        //     ProcessRequest(context, connection);
-        // }
+        // Boucle permettant d'ecouter les requêtes
+        while (true)
+        {
+            var context = await listener.GetContextAsync();
+            ProcessRequest(context, connection);
+        }
     }
     
     static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)
@@ -59,11 +57,30 @@ class Program
         {
             parameters.Add(key, paramet[key].Replace("+", " "));
         }
+        
+        // Recupération du token d'authentification
+        NameValueCollection auth = context.Request.Headers;
+        try
+        {
+            string token = auth["Authorization"].Replace("Bearer ", "");
+            Console.WriteLine(token + " " + token.Length);
+        }
+        catch (Exception e) {}
+        
+        
+        
         // Execution de la requête et mise en forme de la réponse.
         switch (split_path[0])
         {
             case "/":
                 responseString = "Hello, this is the home page!";
+                break;
+            case "/auth":
+                if (context.Request.HttpMethod == "GET")
+                {
+                    string query = "SELECT Token FROM Auth JOIN User ON Auth.Id = User.Id JOIN Login_info ON User.Id = Login_info.Id WHERE Login_info.mail = '" + parameters["mail"] + "' AND Login_info.Password = '" + SQLRequest.hashPwd(parameters["password"]) + "';";
+                    responseString = "Voici votre Token d'authentification: " + SQLRequest.getToken(connection, query);
+                }
                 break;
             case "/select":
                 if (context.Request.HttpMethod == "GET")
@@ -72,28 +89,11 @@ class Program
                     {
                         switch (split_path[1])
                         {
-                            case "/user":
-                                try
-                                {
-                                    switch (split_path[2])
-                                    {
-                                        case "/by_id":
-                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Id = " + parameters["id"] + ";");
-                                            break;
-                                        case "/by_name":
-                                            responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User WHERE Name = '" + parameters["name"] + "';");
-                                            break;
-                                        default:
-                                            responseString = "404 - Not Found";
-                                            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                                            break;
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    // Exemple de requête SELECT ALL User
-                                    responseString = SQLRequest.SelectUser(connection, "SELECT * FROM  User");
-                                }
+                            case "/user_info":
+                                
+                                // Exemple de requête SELECT ALL User
+                                responseString = SQLRequest.SelectUserInfo(connection, parameters);
+                                
                                 break;
                             case "/item":
                                 try

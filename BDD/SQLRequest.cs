@@ -12,9 +12,9 @@ public class SQLRequest
     public static void createDatabaseFile()
     {
         string scriptFilePath = @"..\\..\\..\\BDD\\script.sql";
-        string databaseFilePath = @"..\..\..\BDD\database.sqlite";
+        string databaseFilePath = @"..\\..\\..\\BDD\\database.sqlite";
 
-        if (File.Exists(scriptFilePath))
+        if (File.Exists(scriptFilePath) && File.Exists(databaseFilePath))
         {
             string script = File.ReadAllText(scriptFilePath);
 
@@ -27,7 +27,6 @@ public class SQLRequest
                     command.ExecuteNonQuery();
                 }
             }
-
             Console.WriteLine("Base de données créée avec succès.");
         }
         else
@@ -56,12 +55,27 @@ public class SQLRequest
         }
         return connection;
     }
+    
+    // Get Auth Token -------------------------------------------------------------------------------------------------
+    public static string getToken(SQLiteConnection connection, string query)
+    {
+        String response = "";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            String s = $"{reader["Token"]}\n";
+            response = response + s;
+        }
+        return response;
+    }
         
     // SELECT User ----------------------------------------------------------------------------------------------------------------------
-    public static String SelectUser(SQLiteConnection connection, string query)
+    public static String SelectUserInfo(SQLiteConnection connection, NameValueCollection param)
     {
         String response = "Id, Name, Login_info, Address, Photo, Commands, Cart, Invoices, Prefer_payment, Rating\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteCommand command = new SQLiteCommand("SELECT * FROM User", connection);
         SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
@@ -150,7 +164,7 @@ public class SQLRequest
     public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
     {
         // Récupération des Id avec un COUNT() 
-        int countUser = CountLine(connection, "User", "Id") + 9;
+        int countUser = CountLine(connection, "User", "Id") + 1;
         int countPhoto = CountLine(connection, "Photo", "Id") + 1;
         int countRating = CountLine(connection, "Rating", "Id") + 1 ;
         
@@ -164,6 +178,7 @@ public class SQLRequest
         string queryInvoices = "INSERT INTO Invoices (Id, Invoice) VALUES (@Val1, @Val2)";
         string queryPreferPayement = "INSERT INTO Prefer_payment (Id, Payment) VALUES (@Val1, @Val2)";
         string queryRating = "INSERT INTO Rating (Id, Rating, Comment) VALUES (@Val1, @Val2, @Val3)";
+        string queryAuth = "INSERT INTO Auth (Id, Token) VALUES (@Val1, @Val2)";
         
         // Execution des Querys
         using (SQLiteCommand command = new SQLiteCommand(queryLoginInfo, connection))
@@ -171,7 +186,7 @@ public class SQLRequest
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
             command.Parameters.AddWithValue("@Val2", parameters["mail"]);
-            command.Parameters.AddWithValue("@Val3", parameters["password"]);
+            command.Parameters.AddWithValue("@Val3", hashPwd(parameters["password"]));
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         using (SQLiteCommand command = new SQLiteCommand(queryAddress, connection))
@@ -250,6 +265,15 @@ public class SQLRequest
             command.Parameters.AddWithValue("@Val10", countRating);
             int rowsAffected = command.ExecuteNonQuery();// Exécution de la commande SQL
         }
+        
+        using (SQLiteCommand command = new SQLiteCommand(queryAuth, connection))
+        {
+            // Ajout des paramètres avec leurs valeurs
+            command.Parameters.AddWithValue("@Val1", countUser);
+            command.Parameters.AddWithValue("@Val2", hashToken(parameters["password"]));
+            int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
+        }
+        
         return "Cette utilisateur à bien été ajouter";
     }
     
@@ -447,11 +471,28 @@ public class SQLRequest
         return false;
     }
 
-    public static String getHash(string mdp)
+    public static String hashToken(string mdp)
     {
-        using (SHA1Managed sha256 = new SHA1Managed())
+        using (SHA1Managed sha1 = new SHA1Managed())
         {
-            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(mdp));
+            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(mdp));
+            var sb = new StringBuilder(hash.Length * 2);
+
+            foreach (byte b in hash)
+            {
+                // can be "x2" if you want lowercase
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
+    }
+    
+    public static String hashPwd(string mdp)
+    {
+        using (SHA256Managed sha1 = new SHA256Managed())
+        {
+            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(mdp));
             var sb = new StringBuilder(hash.Length * 2);
 
             foreach (byte b in hash)
