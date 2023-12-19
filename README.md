@@ -18,9 +18,6 @@ Projet C# de deuxième année.
     - Trouver un moyen de vérifier les paramètres (parametre.Lenght),
     - Faker: Id -> 0 quand c'est vide (Cart, Invoices, Commandes)
     - Faire requêtes :
-        - /address/add
-        - /address/change
-        - /address/get
         - /user/change_item
         - /delete/user
         - /delete/item

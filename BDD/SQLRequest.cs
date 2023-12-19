@@ -154,7 +154,7 @@ public class SQLRequest
         return response;
     }
     
-    // SELECT Cart -----------------------------------------------------------------------------------------------------------------
+    // SELECT Invoices -----------------------------------------------------------------------------------------------------------------
     public static String SelectInvoice(SQLiteConnection connection, string query)
     {
         String response = "Id, Invoice\n";
@@ -183,6 +183,21 @@ public class SQLRequest
         }
         return response;
     }
+    
+    // SELECT Address -----------------------------------------------------------------------------------------------------------------
+    public static string selectAddress(SQLiteConnection connection, string query)
+    {
+        String response = "Street, City, CP, State, Country";
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            response = $"Street: {reader["Street"]},\nCity: {reader["City"]},\nCP: {reader["CP"]},\nState: {reader["State"]},\nCountry: {reader["Country"]}\n";
+        }
+        return response;
+    }
+    
     // Insert User -----------------------------------------------------------------------------------------------------------------
     public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
     {
@@ -301,13 +316,12 @@ public class SQLRequest
     }
     
     // Insert Items -----------------------------------------------------------------------------------------------------------------
-    public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters)
+    public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters, int User_Id)
     {
         // Récupération des Id avec un COUNT() et une autre requete 
         int countItems = CountLine(connection, "Items", "Id") + 1;
         int countPhoto = CountLine(connection, "Photo", "Id") + 1 ;
         int countRating = CountLine(connection, "Rating", "Id") + 1 ;
-        int idSeller = SelectUserId(connection, "SELECT * FROM  User WHERE Name = '" + parameters["username"] + "';");
         
         // Querys
         string queryItems = "INSERT INTO Items (Id, Name, Price, Description, Photo, Category, Seller, Rating) VALUES (@Val1, @Val2, @Val3, @Val4, @Val5, @Val6, @Val7, @Val8)";
@@ -335,16 +349,24 @@ public class SQLRequest
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countItems);
-            command.Parameters.AddWithValue("@Val2", parameters["product_name"]);
+            command.Parameters.AddWithValue("@Val2", parameters["name"]);
             command.Parameters.AddWithValue("@Val3", parameters["price"]);
             command.Parameters.AddWithValue("@Val4", parameters["description"]);
             command.Parameters.AddWithValue("@Val5", countPhoto);
-            command.Parameters.AddWithValue("@Val6", parameters["id_category"]);
-            command.Parameters.AddWithValue("@Val7", idSeller);
+            command.Parameters.AddWithValue("@Val6", parameters["category"]);
+            command.Parameters.AddWithValue("@Val7", User_Id);
             command.Parameters.AddWithValue("@Val8", countRating);
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
-        return "Votre Produit à bien été ajouter !!!!!!!!!!!!!!!!!";
+        return "Your product has been add.";
+    }
+    
+    // Insert Address -------------------------------------------------------------------------------------------------------
+    public static void insertAddress(SQLiteConnection connection, string query)
+    {
+        Console.WriteLine(query);
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
     }
     
     // Update Username ----------------------------------------------------------------------------------------------------------------------
@@ -355,7 +377,6 @@ public class SQLRequest
     }
     
     // Update User Photo ----------------------------------------------------------------------------------------------------------------------
-
     public static string UpdateUserPhoto(SQLiteConnection connection, string new_picture, int User_Id)
     {
         // Recuperer Id Photo puis modifier
@@ -373,6 +394,32 @@ public class SQLRequest
         SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + new_picture + "' WHERE Id = " + idPhoto + ";", connection);
         SQLiteDataReader readerUpdate = update.ExecuteReader();
         return $"La photo de {Name} à bien été mise à jour.";
+    }
+    
+    // Update Item --------------------------------------------------------------------------------------------------------
+    public static void UpdateItem(SQLiteConnection connection, string query)
+    {
+        SQLiteCommand command = new SQLiteCommand(query, connection);
+        SQLiteDataReader readerUser = command.ExecuteReader();
+    }
+    
+    // Update Item Photo ---------------------------------------------------------------------------------------------------
+    public static void UpdateItemPhoto(SQLiteConnection connection, string new_picture, int User_Id)
+    {
+        // Recuperer Id Photo puis modifier
+        int idPhoto = 0;
+        string Name = "";
+        SQLiteCommand command = new SQLiteCommand("SELECT Photo, Name FROM User WHERE Id = '" + User_Id + "';", connection);
+        SQLiteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            // Traitement des résultats de la requête SELECT
+            idPhoto = Convert.ToInt32(reader[0]);
+            Name = Convert.ToString(reader[1]);
+        }
+
+        SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + new_picture + "' WHERE Id = " + idPhoto + ";", connection);
+        SQLiteDataReader readerUpdate = update.ExecuteReader();
     }
 
     // Update Cart ----------------------------------------------------------------------------------------------------------------------
