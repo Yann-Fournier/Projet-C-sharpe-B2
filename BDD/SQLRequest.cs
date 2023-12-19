@@ -404,21 +404,19 @@ public class SQLRequest
     }
     
     // Update Item Photo ---------------------------------------------------------------------------------------------------
-    public static void UpdateItemPhoto(SQLiteConnection connection, string new_picture, int User_Id)
+    public static void UpdateItemPhoto(SQLiteConnection connection, NameValueCollection parameters)
     {
         // Recuperer Id Photo puis modifier
         int idPhoto = 0;
-        string Name = "";
-        SQLiteCommand command = new SQLiteCommand("SELECT Photo, Name FROM User WHERE Id = '" + User_Id + "';", connection);
+        SQLiteCommand command = new SQLiteCommand("SELECT Photo FROM Items WHERE Id = '" + parameters["item_id"] + "';", connection);
         SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
             idPhoto = Convert.ToInt32(reader[0]);
-            Name = Convert.ToString(reader[1]);
         }
 
-        SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + new_picture + "' WHERE Id = " + idPhoto + ";", connection);
+        SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + parameters["picture"] + "' WHERE Id = " + idPhoto + ";", connection);
         SQLiteDataReader readerUpdate = update.ExecuteReader();
     }
 
@@ -502,31 +500,6 @@ public class SQLRequest
             return count;
         }
         return -1; // Au cas ou ça plante ...
-    }
-    
-    static int SelectUserId(SQLiteConnection connection, string query)
-    {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            // Traitement des résultats de la requête SELECT
-            int id = Convert.ToInt32(reader[0]);
-            return id;
-        }
-        return 0;
-    }
-
-    static bool InCollection(NameValueCollection parameters, string chaine)
-    {
-        foreach (var key in parameters.AllKeys)
-        {
-            if (key == chaine)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static String hashToken(string mdp)

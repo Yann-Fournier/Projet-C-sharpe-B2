@@ -129,28 +129,28 @@ class Program
             case "/user/change_photo": // Auth, new_photo
                 responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_picture"], User_Id);
                 break;
-            case "/user/add_item": // Auth, new_photo
+            case "/user/add_item": // Auth, name, price, description, photo, category
                 responseString = SQLRequest.InsertItem(connection, parameters, User_Id);
                 break;
-            case "/user/update_item": // Auth, Id (name, price, description, photo, category)
+            case "/user/update_item": // Auth, item_id (name, price, description, photo, category)
                 foreach (var key in parameters)
                 {
                     switch (key)
                     {
                         case "name":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Name = '" + parameters["name"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["id"] + ";");
+                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Name = '" + parameters["name"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
                             break;
                         case "price":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Price = '" + parameters["Price"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["id"] + ";");
+                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Price = '" + parameters["Price"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
                             break;
                         case "description":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Description = '" + parameters["description"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["id"] + ";");
+                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Description = '" + parameters["description"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
                             break;
                         case "picture":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Picture = '" + parameters["picture"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["id"] + ";");
+                            SQLRequest.UpdateItemPhoto(connection, parameters);
                             break;
                         case "category":
-                            SQLRequest.UpdateItemPhoto(connection, parameters["picture"], User_Id);
+                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Category = '" + parameters["category"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
                             break;
                     }
                 }
@@ -161,6 +161,9 @@ class Program
                 break;
             case "/user/cart": // Auth, ...
                 responseString = SQLRequest.SelectCart(connection, "SELECT * FROM Cart JOIN User ON Cart.Id = User.Cart WHERE User.Id =" + User_Id + ";");
+                break;
+            case "/user/update_cart": // Auth, ...
+                responseString = "/user/update_cart";
                 break;
             case "/user/invoices": // Auth, ...
                 responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices JOIN User ON Invoices.Id = User.Invoices WHERE User.Id =" + User_Id + ";");
