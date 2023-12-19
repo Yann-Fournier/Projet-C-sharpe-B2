@@ -39,7 +39,7 @@ def main():
         rating += 1
         comment += 1
 
-    for i in range(user):
+    for i in range(1, user+1):
         create_user(i, login_info, address, photo, commands, cart, invoicies, random.randint(0, payment), rating)
 
         # dependances

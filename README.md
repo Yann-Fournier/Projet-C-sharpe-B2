@@ -15,7 +15,12 @@ Projet C# de deuxième année.
 
 
 ## To Do List
-    - Trouver un moyen de vérifier les paramètres,
-    - faire les deux dernier UPDATE et les deux DELETE.
-    - Rajouter des select (item/by_seller, Bout de mot...)
-    - Rajouter des insert (item?proprio, ...)
+    - Trouver un moyen de vérifier les paramètres (parametre.Lenght),
+    - Faker: Id -> 0 quand c'est vide (Cart, Invoices, Commandes)
+    - Faire requêtes :
+        - /address/add
+        - /address/change
+        - /address/get
+        - /user/change_item
+        - /delete/user
+        - /delete/item
