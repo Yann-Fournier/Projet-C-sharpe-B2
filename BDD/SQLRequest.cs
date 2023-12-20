@@ -137,6 +137,10 @@ public class SQLRequest
             String s = $"{reader["Command"]}\n";
             response = response + s;
         }
+        if (response == "Id of your previous command:\n\n")
+        {
+            return "You don't have command.";
+        }
         return response;
     }
     
@@ -152,13 +156,17 @@ public class SQLRequest
             String s = $"{reader["Items"]}\n";
             response = response + s;
         }
+        if (response == "Id of the items in your cart:\n\n")
+        {
+            return "You don't sell item.";
+        }
         return response;
     }
     
     // SELECT Invoices -----------------------------------------------------------------------------------------------------------------
     public static string SelectInvoice(SQLiteConnection connection, string query)
     {
-        String response = "Id of your previous invoices: \n";
+        String response = "Id of your previous invoices:\n";
         SQLiteCommand command = new SQLiteCommand(query, connection);
         SQLiteDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -166,6 +174,11 @@ public class SQLRequest
             // Traitement des résultats de la requête SELECT
             String s = $"{reader["Invoice"]}\n";
             response = response + s;
+        }
+
+        if (response == "Id of your previous invoices:\n\n")
+        {
+            return "You don't have invoice.";
         }
         return response;
     }
@@ -203,7 +216,7 @@ public class SQLRequest
     public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
     {
         // Récupération des Id avec un COUNT() 
-        int countUser = GetMaxId(connection, "User", "Id") + 0;
+        int countUser = GetMaxId(connection, "User", "Id") + 1;
         int countPhoto = GetMaxId(connection, "Photo", "Id") + 1;
         int countRating = GetMaxId(connection, "Rating", "Id") + 1 ;
         
@@ -224,7 +237,7 @@ public class SQLRequest
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
-            command.Parameters.AddWithValue("@Val2", parameters["mail"]);
+            command.Parameters.AddWithValue("@Val2", parameters["email"]);
             command.Parameters.AddWithValue("@Val3", HashPwd(parameters["password"]));
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
