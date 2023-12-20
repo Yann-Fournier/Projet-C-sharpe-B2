@@ -15,11 +15,7 @@ Projet C# de deuxième année.
 
 
 ## To Do List
-    - Trouver un moyen de vérifier les paramètres (parametre.Lenght),
-    - Faker: Id -> 0 quand c'est vide (Cart, Invoices, Commandes): "Resolut"
-    - Faire requêtes :
-        - /delete/user
-        - /delete/item
+    - Trouver un moyen de vérifier les paramètres (parametre.Lenght)
 
 ## Archi (23 requêtes):
     - / -> page d'acceuil
@@ -37,9 +33,9 @@ Projet C# de deuxième année.
     - /user/update_item -> changer l'une des caractéristiques de votre produit -> Auth, item_id (name, price, description, photo, category)
     - /user/commands -> récupération de vos commandes précédedntes -> Auth
     - /user/cart -> récupération de votre panier -> Auth
-    - /user/update_cart -> changer le contenue de votre panier -> 
+    - /user/update_cart -> changer le contenue de votre panier -> Auth, item_id, option (add, delete)
     - /user/invoices -> récupération de vos facture précédentes -> Auth
-    - /select/items -> récupérationde tous les produits
+    - /select/items -> récupération de tous les produits 
     - /select/items/by_id -> récupération d'un produit en fonction de leurs ID -> id
     - /select/items/by_name -> récupération d'un produit en fonction de leurs nom -> name
     - /select/items/by_price -> récupération d'un produit en fonction de leurs price -> price, option
