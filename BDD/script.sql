@@ -65,10 +65,11 @@ CREATE TABLE IF NOT EXISTS Address
     PRIMARY KEY (Id)
 );
 
+/* enlever le NOT NULL pour Command: L'utilisateur n'a pas encore fait de commande */
 CREATE TABLE IF NOT EXISTS Commands
 (
     Id      INT NOT NULL,
-    Command INT NOT NULL,
+    Command INT,
     PRIMARY KEY (Id),
     FOREIGN KEY (Command) REFERENCES Command (Id)
 );
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS Command
 CREATE TABLE IF NOT EXISTS Cart
 (
     Id    INT NOT NULL,
-    Items INT NOT NULL,
+    Items INT,
     FOREIGN KEY (Items) REFERENCES Items (Id)
 );
 
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS Cart
 CREATE TABLE IF NOT EXISTS Invoices
 (
     Id      INT NOT NULL,
-    Invoice INT NOT NULL,
+    Invoice INT,
     PRIMARY KEY (Id),
     FOREIGN KEY (Invoice) REFERENCES Items (Id)
 );

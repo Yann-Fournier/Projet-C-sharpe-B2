@@ -16,9 +16,8 @@ Projet C# de deuxième année.
 
 ## To Do List
     - Trouver un moyen de vérifier les paramètres (parametre.Lenght),
-    - Faker: Id -> 0 quand c'est vide (Cart, Invoices, Commandes)
+    - Faker: Id -> 0 quand c'est vide (Cart, Invoices, Commandes): "Resolut"
     - Faire requêtes :
-        - /user/update_cart
         - /delete/user
         - /delete/item
 

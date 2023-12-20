@@ -11,10 +11,10 @@ class Program
     static async Task Main(string[] args)
     {
         // Reset database ...
-        // SQLRequest.createDatabaseFile();
+        // SQLRequest.CreateDatabaseFile();
         
         // Connection à la base de données
-        SQLiteConnection connection = SQLRequest.openSqLiteConnection();
+        SQLiteConnection connection = SQLRequest.OpenSqLiteConnection();
         
         // Création de l'api en localhost sur le port 8080
         string url = "http://localhost:8080/";
@@ -61,114 +61,46 @@ class Program
             token = auth["Authorization"].Replace("Bearer ", "");
             // Console.WriteLine(token + " " + token.Length);
             
-            User_Id = int.Parse(SQLRequest.getIdFromToken(connection,
+            User_Id = int.Parse(SQLRequest.GetIdFromToken(connection,
                 "SELECT User.Id AS Id FROM User JOIN Auth ON User.Id = Auth.Id WHERE Auth.Token = '" + token +"';"));
         }
         catch (Exception e) {}
         
         // Execution de la requête et mise en forme de la réponse. ------------------------------------------------------------------------------
-        switch (path)
+        if (path == "/") // Page d'acceuil. La methode http n'est pas importante.
         {
-            case "/":
-                responseString = "Hello! Welcome to the home page of this API. This is a project for our school. You can find the documentation at : https://github.com/Yann-Fournier/Projet-C-sharpe-B2.";
-                break;
-            case "/create_account": // username, password, email
-                responseString = SQLRequest.InsertUser(connection, parameters); 
-                break;
-            case "/auth/token": // email, password
-                if (context.Request.HttpMethod == "GET")
-                {
-                    string query = "SELECT Token FROM Auth JOIN User ON Auth.Id = User.Id JOIN Login_info ON User.Id = Login_info.Id WHERE Login_info.mail = '" + parameters["mail"] + "' AND Login_info.Password = '" + SQLRequest.hashPwd(parameters["password"]) + "';";
-                    responseString = "Voici votre Token d'authentification: " + SQLRequest.getToken(connection, query);
-                }
-                break;
-            case "/address/add": // Auth, street, city, cp, state, country
-                SQLRequest.insertAddress(connection, "UPDATE Address SET Street = '" + parameters["street"] + "', City = '" + parameters["city"] + "', CP = " + parameters["cp"] + ", State = '" + parameters["state"] + "', Country = '" + parameters["country"] + "' WHERE Id = " + User_Id + ";");
-                responseString = "Your address has been add.";
-                break;
-            case "/address/get": // Auth, ...
-                responseString = SQLRequest.selectAddress(connection, "SELECT * FROM Address WHERE Id = " + User_Id + ";");
-                break;
-            case "/address/update": // Auth, (street, city, cp, state, country)
-                foreach (var key in parameters)
-                {
-                    switch (key)
-                    {
-                        case "street":
-                            SQLRequest.insertAddress(connection, "UPDATE Address SET Street = '" + parameters["street"] + "' WHERE Id = " + User_Id + ";");
-                            break;
-                        case "city":
-                            SQLRequest.insertAddress(connection, "UPDATE Address SET City = '" + parameters["city"] + "' WHERE Id = " + User_Id + ";");
-                            break;
-                        case "cp":
-                            SQLRequest.insertAddress(connection, "UPDATE Address SET CP = " + parameters["cp"] + " WHERE Id = " + User_Id + ";");
-                            break;
-                        case "state":
-                            SQLRequest.insertAddress(connection, "UPDATE Address SET State = '" + parameters["state"] + "' WHERE Id = " + User_Id + ";");
-                            break;
-                        case "country":
-                            SQLRequest.insertAddress(connection, "UPDATE Address SET  Country = '" + parameters["country"] + "' WHERE Id = " + User_Id + ";");
-                            break;
-                    }
-                }
-                responseString = "Your address has been update.";
-                break;
-            case "/category": 
-                responseString = SQLRequest.SelectCategory(connection, "SELECT * FROM Category;");
-                break;
-            case "/user/get_info": // Auth
-                responseString = SQLRequest.SelectUserInfo(connection, "SELECT * FROM User WHERE Id = " + User_Id + ";");
-                break;
-            case "/user/get_items": // Auth, ...
-                responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Seller = '" + User_Id + "';", 1);
-                break;
-            case "/user/change_username": // Auth, new_name
-                SQLRequest.UpdateUsername(connection, "UPDATE User SET Name = '" + parameters["new_name"] + "' WHERE Id = " + User_Id + ";");
-                responseString = $"Votre username est maintenant: {parameters["new_name"]}.";
-                break;
-            case "/user/change_photo": // Auth, new_photo
-                responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_picture"], User_Id);
-                break;
-            case "/user/add_item": // Auth, name, price, description, photo, category
-                responseString = SQLRequest.InsertItem(connection, parameters, User_Id);
-                break;
-            case "/user/update_item": // Auth, item_id (name, price, description, photo, category)
-                foreach (var key in parameters)
-                {
-                    switch (key)
-                    {
-                        case "name":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Name = '" + parameters["name"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
-                            break;
-                        case "price":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Price = '" + parameters["Price"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
-                            break;
-                        case "description":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Description = '" + parameters["description"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
-                            break;
-                        case "picture":
-                            SQLRequest.UpdateItemPhoto(connection, parameters);
-                            break;
-                        case "category":
-                            SQLRequest.UpdateItem(connection, "UPDATE Items SET Category = '" + parameters["category"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
-                            break;
-                    }
-                }
-                responseString = "Your item has been update";
-                break;
-            case "/user/commands": // Auth, ...
+            responseString = "Hello! Welcome to the home page of this API. This is a project for our school. You can find the documentation at : https://github.com/Yann-Fournier/Projet-C-sharpe-B2.";
+        }
+        else if (context.Request.HttpMethod == "GET")
+        {
+            switch (path)
+            {
+                case "/auth/token": // email, password
+                    string query = "SELECT Token FROM Auth JOIN User ON Auth.Id = User.Id JOIN Login_info ON User.Id = Login_info.Id WHERE Login_info.mail = '" + parameters["mail"] + "' AND Login_info.Password = '" + SQLRequest.HashPwd(parameters["password"]) + "';";
+                    responseString = "Voici votre Token d'authentification: " + SQLRequest.GetToken(connection, query);
+                    break;
+                case "/address/get": // Auth
+                    responseString = SQLRequest.SelectAddress(connection, "SELECT * FROM Address WHERE Id = " + User_Id + ";");
+                    break;
+                case "/category": //
+                    responseString = SQLRequest.SelectCategory(connection, "SELECT * FROM Category;");
+                    break;
+                case "/user/get_info": // Auth
+                    responseString = SQLRequest.SelectUserInfo(connection, "SELECT * FROM User WHERE Id = " + User_Id + ";");
+                    break;
+                case "/user/get_items": // Auth
+                    responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Seller = " + User_Id + ";", 1);
+                    break;
+                case "/user/commands": // Auth
                 responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands JOIN User ON Commands.Id = User.Commands WHERE User.Id =" + User_Id + ";");
                 break;
-            case "/user/cart": // Auth, ...
+            case "/user/cart": // Auth
                 responseString = SQLRequest.SelectCart(connection, "SELECT * FROM Cart JOIN User ON Cart.Id = User.Cart WHERE User.Id =" + User_Id + ";");
                 break;
-            case "/user/update_cart": // Auth, ...
-                responseString = "/user/update_cart";
-                break;
-            case "/user/invoices": // Auth, ...
+            case "/user/invoices": // Auth
                 responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices JOIN User ON Invoices.Id = User.Invoices WHERE User.Id =" + User_Id + ";");
                 break;
-            case "/select/items": // Get all items
+            case "/select/items": // 
                 responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items", 0);
                 break;
             case "/select/items/by_id": // id
@@ -191,16 +123,102 @@ class Program
                     responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Price < '" + parameters["price"] + "';", 0);
                 }
                 break;
-            case "/delete/user": // Auth
-                responseString = "/delete/user";
-                break;
-            case "/delete/item": // Auth, item_id
-                responseString = "/delete/item";
-                break;
-            default:
-                responseString = "404 - Not Found";
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                break;
+                default:
+                    responseString = "404 - Not Found:\n\n   - Verify the request method\n   - Verify the url\n   - Verify the parameters\n   - Verify your token";
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+            }
+        }
+        else if (context.Request.HttpMethod == "POST")
+        {
+            switch (path)
+            {
+                case "/create_account": // username, password, email
+                    responseString = SQLRequest.InsertUser(connection, parameters); 
+                    break;
+                case "/address/add": // Auth, street, city, cp, state, country
+                    SQLRequest.InsertAddress(connection, "UPDATE Address SET Street = '" + parameters["street"] + "', City = '" + parameters["city"] + "', CP = " + parameters["cp"] + ", State = '" + parameters["state"] + "', Country = '" + parameters["country"] + "' WHERE Id = " + User_Id + ";");
+                    responseString = "Your address has been add.";
+                    break;
+                case "/address/update": // Auth, (street, city, cp, state, country)
+                    foreach (var key in parameters)
+                    {
+                        switch (key)
+                        {
+                            case "street":
+                                SQLRequest.InsertAddress(connection, "UPDATE Address SET Street = '" + parameters["street"] + "' WHERE Id = " + User_Id + ";");
+                                break;
+                            case "city":
+                                SQLRequest.InsertAddress(connection, "UPDATE Address SET City = '" + parameters["city"] + "' WHERE Id = " + User_Id + ";");
+                                break;
+                            case "cp":
+                                SQLRequest.InsertAddress(connection, "UPDATE Address SET CP = " + parameters["cp"] + " WHERE Id = " + User_Id + ";");
+                                break;
+                            case "state":
+                                SQLRequest.InsertAddress(connection, "UPDATE Address SET State = '" + parameters["state"] + "' WHERE Id = " + User_Id + ";");
+                                break;
+                            case "country":
+                                SQLRequest.InsertAddress(connection, "UPDATE Address SET  Country = '" + parameters["country"] + "' WHERE Id = " + User_Id + ";");
+                                break;
+                        }
+                    }
+                    responseString = "Your address has been update.";
+                    break;
+                case "/user/change_username": // Auth, new_name
+                    SQLRequest.UpdateUsername(connection, "UPDATE User SET Name = '" + parameters["new_name"] + "' WHERE Id = " + User_Id + ";");
+                    responseString = $"Votre username est maintenant: {parameters["new_name"]}.";
+                    break;
+                case "/user/change_photo": // Auth, new_photo
+                    responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_picture"], User_Id);
+                    break;
+                case "/user/add_item": // Auth, name, price, description, photo, category
+                    responseString = SQLRequest.InsertItem(connection, parameters, User_Id);
+                    break;
+                case "/user/update_item": // Auth, item_id (name, price, description, photo, category)
+                    foreach (var key in parameters)
+                    {
+                        switch (key)
+                        {
+                            case "name":
+                                SQLRequest.UpdateItem(connection, "UPDATE Items SET Name = '" + parameters["name"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
+                                break;
+                            case "price":
+                                SQLRequest.UpdateItem(connection, "UPDATE Items SET Price = '" + parameters["Price"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
+                                break;
+                            case "description":
+                                SQLRequest.UpdateItem(connection, "UPDATE Items SET Description = '" + parameters["description"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
+                                break;
+                            case "picture":
+                                SQLRequest.UpdateItemPhoto(connection, parameters);
+                                break;
+                            case "category":
+                                SQLRequest.UpdateItem(connection, "UPDATE Items SET Category = '" + parameters["category"] + "' WHERE Seller = " + User_Id + " AND Id = " + parameters["item_id"] + ";");
+                                break;
+                        }
+                    }
+                    responseString = "Your item has been update";
+                    break;
+                case "/user/update_cart": // Auth, item_id, option
+                    responseString = SQLRequest.UpdateCart(connection, parameters, User_Id);
+                    break;
+                case "/delete/user": // Auth
+                    SQLRequest.DeleteUser(connection, User_Id);
+                    responseString = "Your account has been delete successfuly";
+                    break;
+                case "/delete/item": // Auth, item_id
+                    SQLRequest.DeleteItem(connection, Convert.ToInt32(parameters["item_id"]), true);
+                    responseString = "Your item has been delete successfuly";
+                    break;
+                default:
+                    responseString = "404 - Not Found:\n\n   - Verify the request method\n   - Verify the url\n   - Verify the parameters\n   - Verify your token";
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+            }
+        }
+        else
+        {
+            responseString = "404 - Not Found:\n\n   - Verify the request method\n   - Verify the url\n   - Verify the parameters\n   - Verify your token";
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
         }
         
         // Envoie de la réponse.
