@@ -158,7 +158,7 @@ public class SQLRequest
         }
         if (response == "Id of the items in your cart:\n\n")
         {
-            return "You don't sell item.";
+            return "Your cart is empty.";
         }
         return response;
     }
