@@ -511,7 +511,7 @@ public class SQLRequest
         int idPhoto = 0;
         int idRating = 0;
         int Rows = 0;
-        if (IdItem)
+        if (IdItem) // delete item because of the delete account of the seller
         {
             SQLiteCommand commandItem = new SQLiteCommand("SELECT Photo, Rating FROM Items WHERE Id = '" + Id + "';", connection);
             SQLiteDataReader readerItem = commandItem.ExecuteReader();
@@ -524,7 +524,7 @@ public class SQLRequest
             SQLiteCommand delItem = new SQLiteCommand("DELETE FROM Items WHERE Id = " + Id + ";", connection);
             Rows = delItem.ExecuteNonQuery();
         }
-        else if (!IdItem)
+        else if (!IdItem) // delete order by the seller
         {
             SQLiteCommand commandItem = new SQLiteCommand("SELECT Photo, Rating FROM Items WHERE Seller = '" + Id + "';", connection);
             SQLiteDataReader readerItem = commandItem.ExecuteReader();

@@ -287,7 +287,7 @@ class Program
                     }
                     else
                     {
-                        responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_picture"], User_Id);
+                        responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_photo"], User_Id);
                     }
                     break;
                 case "/user/add_item": // Auth, name, price, description, photo, category
