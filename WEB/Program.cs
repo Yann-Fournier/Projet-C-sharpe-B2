@@ -19,18 +19,18 @@ class Program
         
         
         // Création de l'api en localhost sur le port 8080
-        // string url = "http://localhost:8080/";
-        // var listener = new HttpListener();
-        // listener.Prefixes.Add(url);
-        // listener.Start();
-        // Console.WriteLine($"Ecoute sur {url}");
-        //
-        // // Boucle permettant de récuperer les requêtes
-        // while (true)
-        // {
-        //     var context = await listener.GetContextAsync();
-        //     ProcessRequest(context, connection);
-        // }
+        string url = "http://localhost:8080/";
+        var listener = new HttpListener();
+        listener.Prefixes.Add(url);
+        listener.Start();
+        Console.WriteLine($"Ecoute sur {url}");
+        
+        // Boucle permettant de récuperer les requêtes
+        while (true)
+        {
+            var context = await listener.GetContextAsync();
+            ProcessRequest(context, connection);
+        }
     }
     
     static void ProcessRequest(HttpListenerContext context, MySqlConnection connection)
