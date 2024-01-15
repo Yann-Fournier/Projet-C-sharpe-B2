@@ -19,6 +19,7 @@ Projet C# de deuxième année.
 
 ## Archi (23 requêtes):
 >En vert: rêquetes disponibles.
+
 En rouge: rêquetes non disponibles.
 
 ![Archi_API.png](Archi_API.png)
