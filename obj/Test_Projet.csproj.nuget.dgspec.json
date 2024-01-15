@@ -38,6 +38,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.2.0, )"
+            },
+            "MySqlClient": {
+              "target": "Package",
+              "version": "[5.5.1, )"
+            },
             "MySqlConnector": {
               "target": "Package",
               "version": "[2.3.0, )"

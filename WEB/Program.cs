@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Text;
 // using System.Data.SQLite;
-using MySqlConnector;
+using MySql.Data.MySqlClient;
+// using MySqlConnector;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Web;
 using WEB;
 

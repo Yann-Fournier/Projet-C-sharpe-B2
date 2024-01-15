@@ -1,10 +1,8 @@
-﻿// using System.Data.MySqlClient;
-using MySqlConnector;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Text;
+using MySql.Data.MySqlClient;
+// using MySqlConnector;
 
 namespace WEB;
 
@@ -41,8 +39,7 @@ public class SQLRequest
     public static MySqlConnection OpenMySqlConnection()
     {
         // Data Source = chemin de la database
-        string absolutePath = @"..\..\..\BDD\database.sqlite";
-        string connectionString = $"Data Source={absolutePath};Version=3;";
+        string connectionString = $"server=localhost;port=3306;User ID=root;Password=root;";
         // Création de la connection
         MySqlConnection connection = new MySqlConnection(connectionString);
         try
