@@ -23,7 +23,7 @@ class Program
         listener.Start();
         Console.WriteLine($"Ecoute sur {url}");
         
-        // Boucle permettant d'ecouter les requêtes
+        // Boucle permettant de récuperer les requêtes
         while (true)
         {
             var context = await listener.GetContextAsync();
@@ -33,9 +33,8 @@ class Program
     
     static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)
     {
-        string responseString = ""; // Initialization of the response string
-
-        // Recupération de la requête et mise en forme -------------------------------------------------------------
+        string responseString = ""; // Initialisation de la réponse
+        
         // Récupération du chemin et mise en forme
         string path = context.Request.Url.AbsolutePath.ToLower();
         if (path[path.Length - 1] == '/')
@@ -43,16 +42,16 @@ class Program
             path = path.Substring(0, path.Length - 1);
         }
         
-        // Récupération des paramètres et mise en forme (?test=123&aze=aze)
         string param = context.Request.Url.Query;
-        NameValueCollection paramet = HttpUtility.ParseQueryString(param); // Parse les paramètres de la chaîne de requête
+        // Parse les paramètres de la chaîne de requête
+        NameValueCollection paramet = HttpUtility.ParseQueryString(param); 
         NameValueCollection parameters = new NameValueCollection();;
         foreach (String key in paramet)
         {
             parameters.Add(key, paramet[key].Replace("+", " "));
         }
         
-        // Recupération du token d'authentification et mise en forme
+        // Recupération du token d'authentification
         NameValueCollection auth = context.Request.Headers;
         string token = "";
         int User_Id = -1;
@@ -66,8 +65,8 @@ class Program
         }
         catch (Exception e) {}
         
-        // Execution de la requête et mise en forme de la réponse. ------------------------------------------------------------------------------
-        if (path == "") // Page d'acceuil. La methode http n'est pas importante.
+        // Exécution de la requête
+        if (path == "") // Page d'acceuil, méthode http pas importante.
         {
             if (parameters.Count != 0)
             {
@@ -93,7 +92,7 @@ class Program
                         responseString = "Voici votre Token d'authentification: " + SQLRequest.GetToken(connection, query);
                     }
                     break;
-                case "/address/get": // Auth
+                case "/address/get": // Authentification
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -103,7 +102,7 @@ class Program
                         responseString = SQLRequest.SelectAddress(connection, "SELECT * FROM Address WHERE Id = " + User_Id + ";");
                     }
                     break;
-                case "/category": //
+                case "/category": //type de produit
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -113,7 +112,7 @@ class Program
                         responseString = SQLRequest.SelectCategory(connection, "SELECT * FROM Category;");
                     }
                     break;
-                case "/user/get_info": // Auth
+                case "/user/get_info": // information sur le compte
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -123,7 +122,7 @@ class Program
                         responseString = SQLRequest.SelectUserInfo(connection, "SELECT * FROM User WHERE Id = " + User_Id + ";");
                     }
                     break;
-                case "/user/get_items": // Auth
+                case "/user/get_items": // information sur les items
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -133,7 +132,7 @@ class Program
                         responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Seller = " + User_Id + ";", 1);
                     }
                     break;
-                case "/user/commands": // Auth
+                case "/user/commands": // information sur les commandes
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -143,7 +142,7 @@ class Program
                         responseString = SQLRequest.SelectCommands(connection, "SELECT * FROM  Commands JOIN User ON Commands.Id = User.Commands WHERE User.Id =" + User_Id + ";");
                     }
                     break;
-                case "/user/cart": // Auth
+                case "/user/cart": // information sur le panier
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -153,7 +152,7 @@ class Program
                         responseString = SQLRequest.SelectCart(connection, "SELECT * FROM Cart JOIN User ON Cart.Id = User.Cart WHERE User.Id =" + User_Id + ";");
                     }
                     break;
-                case "/user/invoices": // Auth
+                case "/user/invoices": // information sur les factures
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -163,7 +162,7 @@ class Program
                         responseString = SQLRequest.SelectInvoice(connection, "SELECT * FROM Invoices JOIN User ON Invoices.Id = User.Invoices WHERE User.Id =" + User_Id + ";");
                     }
                     break;
-                case "/select/items": // 
+                case "/select/items": // produits choisit
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -193,7 +192,7 @@ class Program
                         responseString = SQLRequest.SelectItems(connection, "SELECT * FROM  Items WHERE Name = '" + parameters["name"] + "';", 0);
                     }
                     break;
-                case "/select/items/by_price": // price, option
+                case "/select/items/by_price": // prix, option
                     if (parameters.Count != 2)
                     {
                         responseString = "You have to add 2 parameter only: id, option.";
@@ -234,7 +233,7 @@ class Program
                         responseString = SQLRequest.InsertUser(connection, parameters);
                     }
                     break;
-                case "/address/add": // Auth, street, city, cp, state, country
+                case "/address/add": // Authentification, street, city, cp, state, country
                     if (parameters.Count != 5)
                     {
                         responseString = "You have to add 5 parameter only: street, city, cp, state, country.";
@@ -245,7 +244,7 @@ class Program
                         responseString = "Your address has been add.";
                     }
                     break;
-                case "/address/update": // Auth, (street, city, cp, state, country)
+                case "/address/update": // update de la table address
                     foreach (var key in parameters)
                     {
                         switch (key)
@@ -269,7 +268,7 @@ class Program
                     }
                     responseString = "Your address has been update.";
                     break;
-                case "/user/change_username": // Auth, new_name
+                case "/user/change_username": // Auth, changement de username
                     if (parameters.Count != 1)
                     {
                         responseString = "You have to add 1 parameter only: new_name.";
@@ -280,7 +279,7 @@ class Program
                         responseString = $"Votre username est maintenant: {parameters["new_name"]}.";
                     }
                     break;
-                case "/user/change_photo": // Auth, new_photo
+                case "/user/change_photo": // Auth, ajout de photo
                     if (parameters.Count != 1)
                     {
                         responseString = "You have to add 1 parameter only: new_photo.";
@@ -290,7 +289,7 @@ class Program
                         responseString = SQLRequest.UpdateUserPhoto(connection, parameters["new_photo"], User_Id);
                     }
                     break;
-                case "/user/add_item": // Auth, name, price, description, photo, category
+                case "/user/add_item": // Auth, name, prix, description, photo, category
                     if (parameters.Count != 5)
                     {
                         responseString = "You have to add 5 parameter only: name, price, description, photo, category";
@@ -341,7 +340,7 @@ class Program
                         responseString = SQLRequest.UpdateCart(connection, parameters, User_Id);
                     }
                     break;
-                case "/delete/user": // Auth
+                case "/delete/user": // Authentification, suppression du compte
                     if (parameters.Count != 0)
                     {
                         responseString = "They are too many parameters.";
@@ -352,7 +351,7 @@ class Program
                         responseString = "Your account has been delete successfuly";
                     }
                     break;
-                case "/delete/item": // Auth, item_id
+                case "/delete/item": // Auth, suppresion d'un item
                     if (parameters.Count != 1)
                     {
                         responseString = "You have to add 1 parameter only: item_id.";
