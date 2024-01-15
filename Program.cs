@@ -34,6 +34,7 @@ class Program
     static void ProcessRequest(HttpListenerContext context, SQLiteConnection connection)
     {
         string responseString = ""; // Initialisation de la réponse
+        bool pasOk = false;
         
         // Récupération du chemin et mise en forme
         string path = context.Request.Url.AbsolutePath.ToLower();
@@ -59,11 +60,14 @@ class Program
         {
             token = auth["Authorization"].Replace("Bearer ", "");
             // Console.WriteLine(token + " " + token.Length);
-            
+
             User_Id = int.Parse(SQLRequest.GetIdFromToken(connection,
-                "SELECT User.Id AS Id FROM User JOIN Auth ON User.Id = Auth.Id WHERE Auth.Token = '" + token +"';"));
+                "SELECT User.Id AS Id FROM User JOIN Auth ON User.Id = Auth.Id WHERE Auth.Token = '" + token + "';"));
         }
-        catch (Exception e) {}
+        catch (Exception e)
+        {
+            pasOk = true;
+        }
         
         // Exécution de la requête
         if (path == "") // Page d'acceuil, méthode http pas importante.
@@ -369,6 +373,12 @@ class Program
             }
         }
         else
+        {
+            responseString = "404 - Not Found:\n\n   - Verify the request method\n   - Verify the url\n   - Verify the parameters\n   - Verify your token";
+            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+        }
+        
+        if (pasOk)
         {
             responseString = "404 - Not Found:\n\n   - Verify the request method\n   - Verify the url\n   - Verify the parameters\n   - Verify your token";
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
