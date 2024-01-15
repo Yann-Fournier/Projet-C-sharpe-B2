@@ -16,12 +16,43 @@ DROP TABLE IF EXISTS Photo;
 DROP TABLE IF EXISTS Prefer_payment;
 DROP TABLE IF EXISTS Comment;
 
+CREATE TABLE IF NOT EXISTS Comment
+(
+    Id      INT          NOT NULL,
+    Comment VARCHAR(255) NOT NULL,
+    User    INT          NOT NULL,
+    FOREIGN KEY (User) REFERENCES "User" (Id)
+);
+
+CREATE TABLE IF NOT EXISTS User
+(
+    Id             INT          NOT NULL,
+    Name           VARCHAR(255) NOT NULL,
+    Login_info     INT          NOT NULL,
+    Address        INT          NOT NULL,
+    Photo          INT          NOT NULL,
+    Commands       INT          NOT NULL,
+    Cart           INT          NOT NULL,
+    Invoices       INT          NOT NULL,
+    Prefer_payment INT          NOT NULL,
+    Rating         INT          NOT NULL,
+    PRIMARY KEY (Id)
+#     FOREIGN KEY (Login_info) REFERENCES Login_info (Id),
+#     FOREIGN KEY (Address) REFERENCES Address (Id),
+#     FOREIGN KEY (Photo) REFERENCES Photo (Id),
+#     FOREIGN KEY (Commands) REFERENCES Commands (Id),
+#     FOREIGN KEY (Cart) REFERENCES Cart (Id),
+#     FOREIGN KEY (Invoices) REFERENCES Invoices (Id),
+#     FOREIGN KEY (Prefer_payment) REFERENCES Prefer_payment (Id),
+#     FOREIGN KEY (Rating) REFERENCES Rating (Id)
+);
+
 CREATE TABLE IF NOT EXISTS Login_info
 (
     Id       INT          NOT NULL,
     mail     VARCHAR(255) NOT NULL,
     Password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (Id)
+    FOREIGN KEY (Id) REFERENCES "User" (Id)
 );
 
 CREATE TABLE IF NOT EXISTS Payment
@@ -158,4 +189,11 @@ CREATE TABLE IF NOT EXISTS User
 #     FOREIGN KEY (Invoices) REFERENCES Invoices (Id),
 #     FOREIGN KEY (Prefer_payment) REFERENCES Prefer_payment (Id),
 #     FOREIGN KEY (Rating) REFERENCES Rating (Id)
+);
+
+CREATE TABLE IF NOT EXISTS Auth
+(
+    Id INT NOT NULL,
+    Token VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Id) REFERENCES "User" (Id)
 );

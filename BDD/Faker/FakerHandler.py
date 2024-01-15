@@ -11,7 +11,7 @@ except:
 # con = sqlite3.connect("../database.sqlite")
 global id_master
 
-
+    
 def create_user(i, login_info, address, photo, commands, cart, invoices, prefer_payment, rating, data=None):
     if con is None:
         return

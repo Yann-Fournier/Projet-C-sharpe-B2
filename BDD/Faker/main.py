@@ -6,8 +6,11 @@ produit = 20
 user = 5
 payment = 2
 
+<<<<<<< HEAD
 print("Faker: INSERT 20 PRODUITS, 5 USERS, 2 PAYMENTS...")
 
+=======
+>>>>>>> 7005a567d70d80777a5d01c6f017792746aa0f6d
 def main():
     
     if con is None:

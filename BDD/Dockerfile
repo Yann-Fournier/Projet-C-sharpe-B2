@@ -1,5 +1,6 @@
 FROM albericwalsh/ecommerce:BDD-ecomerce
 WORKDIR /app
+RUN echo "BDD Dockerfile processing..."
 COPY . /app
 #RUN chmod +x ./mariaDB_install.sh
 #RUN ./mariaDB_install.sh
