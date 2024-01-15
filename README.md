@@ -18,6 +18,8 @@ Projet C# de deuxième année.
     - Trouver un moyen de vérifier les paramètres (parametre.Lenght)
 
 ## Archi (23 requêtes):
+En vert: rêquetes disponibles.
+En rouge: rêquetes pas disponible.
     - / -> page d'acceuil
     - /create_account -> créer un compte -> username, password, email
     - /auth/token -> récupération de son token d'identification -> email, password
