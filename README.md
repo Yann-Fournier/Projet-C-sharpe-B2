@@ -18,6 +18,8 @@ Projet C# de deuxième année.
     - Trouver un moyen de vérifier les paramètres (parametre.Lenght)
 
 ## Archi (23 requêtes):
+>En vert: Les requetes disponibles.
+>En rouge: Le requetes pas disponible.
 
 ![Archi_API.png](Archi_API.png)
 
