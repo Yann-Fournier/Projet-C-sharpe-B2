@@ -1,5 +1,5 @@
 FROM albericwalsh/ecommerce:WEB-ecomerce
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+#COPY ./default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /docker-entrypoint.d
 ADD dotnet_install.sh .
 RUN chmod +x dotnet_install.sh

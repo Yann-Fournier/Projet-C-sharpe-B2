@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {}
+    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {
+    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
+        "projectUniqueName": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
         "projectName": "Test_Projet",
-        "projectPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
-        "packagesPath": "C:\\Users\\yfour\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\obj\\",
+        "projectPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
+        "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
+        "outputPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\yfour\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
