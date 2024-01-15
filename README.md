@@ -19,6 +19,8 @@ Projet C# de deuxième année.
 
 ## Archi (23 requêtes):
 
+![Archi_API.png](Archi_API.png)
+
     - / -> page d'acceuil
     - /create_account -> créer un compte -> username, password, email
     - /auth/token -> récupération de son token d'identification -> email, password
