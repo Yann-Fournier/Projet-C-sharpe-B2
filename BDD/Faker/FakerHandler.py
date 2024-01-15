@@ -1,14 +1,20 @@
 import random
-import sqlite3
+import MySQLdb as mysql
 from faker import Faker
 
 from hash import hash_passwd
 
-con = sqlite3.connect("../database.sqlite")
+try:
+    con = mysql.connect("../database.sql")
+except:
+    print("Faker: Database not found, creating a new one.")
+# con = sqlite3.connect("../database.sqlite")
 global id_master
 
     
 def create_user(i, login_info, address, photo, commands, cart, invoices, prefer_payment, rating, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().name(), login_info, address, photo,
@@ -21,6 +27,8 @@ def create_user(i, login_info, address, photo, commands, cart, invoices, prefer_
 
 
 def create_product(i, photo, category, seller, rating, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().name(), Faker().random_int(), Faker().text(), photo,
@@ -34,6 +42,8 @@ def create_product(i, photo, category, seller, rating, data=None):
 
 
 def create_photo(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().image_url()
@@ -45,6 +55,8 @@ def create_photo(i, data=None):
 
 
 def create_category(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().job()
@@ -56,6 +68,8 @@ def create_category(i, data=None):
 
 
 def create_address(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().street_address(), Faker().city(), Faker().random_int(), Faker().state(),
@@ -68,6 +82,8 @@ def create_address(i, data=None):
 
 
 def create_cart(i, item, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, item
@@ -79,6 +95,8 @@ def create_cart(i, item, data=None):
 
 
 def create_command(i, item, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, item
@@ -90,6 +108,8 @@ def create_command(i, item, data=None):
 
 
 def create_commands(i, command, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, command
@@ -101,6 +121,8 @@ def create_commands(i, command, data=None):
 
 
 def create_invoice(i, item, payment, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, item, Faker().date(), payment
@@ -112,6 +134,8 @@ def create_invoice(i, item, payment, data=None):
 
 
 def create_invoices(i, invoice, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, invoice
@@ -123,6 +147,8 @@ def create_invoices(i, invoice, data=None):
 
 
 def create_login_info(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().email(), hash_passwd(Faker().password())
@@ -134,6 +160,8 @@ def create_login_info(i, data=None):
 
 
 def create_payment(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().currency()[0]
@@ -145,6 +173,8 @@ def create_payment(i, data=None):
 
 
 def create_prefer_payment(i, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().random_int()
@@ -156,6 +186,8 @@ def create_prefer_payment(i, data=None):
 
 
 def create_rating(i, comment, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, random.randint(0, 5), comment
@@ -167,6 +199,8 @@ def create_rating(i, comment, data=None):
 
 
 def create_comment(i, user, data=None):
+    if con is None:
+        return
     if data is None:
         data = [
             i, Faker().text(), user

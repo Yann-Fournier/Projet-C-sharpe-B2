@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {}
+    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\WEB\\Test_Projet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {
+    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\WEB\\Test_Projet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
+        "projectUniqueName": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\WEB\\Test_Projet.csproj",
         "projectName": "Test_Projet",
-        "projectPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
+        "projectPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\WEB\\Test_Projet.csproj",
         "packagesPath": "C:\\Users\\yfour\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\obj\\",
+        "outputPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\WEB\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\yfour\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -40,7 +40,7 @@
           "dependencies": {
             "MySqlConnector": {
               "target": "Package",
-              "version": "[2.3.0, )"
+              "version": "[8.1.0, )"
             },
             "System.Data.SQLite": {
               "target": "Package",

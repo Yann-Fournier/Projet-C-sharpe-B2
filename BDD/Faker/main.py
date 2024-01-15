@@ -1,14 +1,22 @@
-import os
 from random import random
 
 from FakerHandler import *
 
-produit = eval(input("Entrez un nombre de produit à générer: "))
-user = eval(input("Entrez un nombre d'utilisateur à générer: "))
-payment = eval(input("Entrez un nombre de type de paiement à générer: "))
+produit = 20
+user = 5
+payment = 2
 
+<<<<<<< HEAD
+print("Faker: INSERT 20 PRODUITS, 5 USERS, 2 PAYMENTS...")
+
+=======
+>>>>>>> 7005a567d70d80777a5d01c6f017792746aa0f6d
 def main():
-
+    
+    if con is None:
+        print("Faker: Failed to connect to database.")
+        return
+    
     photo = 0
     category = 0
     rating = 0
@@ -70,5 +78,7 @@ def main():
         invoicie += 1
         rating += 1
         comment += 1
+    
+    print("Faker: Successfully ended.")
 
 main()

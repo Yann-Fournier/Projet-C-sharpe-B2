@@ -55,3 +55,5 @@ C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\obj\Debug\net8.0\r
 C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\obj\Debug\net8.0\Test_Projet.pdb
 C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\obj\Debug\net8.0\Test_Projet.genruntimeconfig.cache
 C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\obj\Debug\net8.0\ref\Test_Projet.dll
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\bin\Debug\net8.0\MySqlConnector.dll

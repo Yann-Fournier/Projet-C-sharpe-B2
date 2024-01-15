@@ -1,11 +1,12 @@
-﻿using System.Data.SQLite;
+﻿// using System.Data.MySqlClient;
+using MySqlConnector;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BDD;
+namespace WEB;
 
 public class SQLRequest
 {
@@ -13,17 +14,17 @@ public class SQLRequest
     public static void CreateDatabaseFile()
     {
         string scriptFilePath = @"..\\..\\..\\BDD\\script.sql";
-        string databaseFilePath = @"..\\..\\..\\BDD\\database.sqlite";
+        string databaseFilePath = @"..\\..\\..\\BDD\\database.mysql";
 
         if (File.Exists(scriptFilePath) && File.Exists(databaseFilePath))
         {
             string script = File.ReadAllText(scriptFilePath);
 
-            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={databaseFilePath};Version=3;"))
+            using (MySqlConnection connection = new MySqlConnection($"Data Source={databaseFilePath};Version=3;"))
             {
                 connection.Open();
 
-                using (SQLiteCommand command = new SQLiteCommand(script, connection))
+                using (MySqlCommand command = new MySqlCommand(script, connection))
                 {
                     command.ExecuteNonQuery();
                 }
@@ -37,13 +38,13 @@ public class SQLRequest
     }
     
     // Connection à la base de données ------------------------------------------------------------------------------------------------------
-    public static SQLiteConnection OpenSqLiteConnection()
+    public static MySqlConnection OpenMySqlConnection()
     {
         // Data Source = chemin de la database
         string absolutePath = @"..\..\..\BDD\database.sqlite";
         string connectionString = $"Data Source={absolutePath};Version=3;";
         // Création de la connection
-        SQLiteConnection connection = new SQLiteConnection(connectionString);
+        MySqlConnection connection = new MySqlConnection(connectionString);
         try
         {
             // Ouverture de la connection avec la base de données
@@ -58,11 +59,11 @@ public class SQLRequest
     }
     
     // Get Auth Token -------------------------------------------------------------------------------------------------
-    public static string GetToken(SQLiteConnection connection, string query)
+    public static string GetToken(MySqlConnection connection, string query)
     {
         String response = "";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -72,11 +73,11 @@ public class SQLRequest
         return response;
     }
     
-    public static string GetIdFromToken(SQLiteConnection connection, string query)
+    public static string GetIdFromToken(MySqlConnection connection, string query)
     {
         string response = "";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -87,11 +88,11 @@ public class SQLRequest
     }
         
     // SELECT User ----------------------------------------------------------------------------------------------------------------------
-    public static string SelectUserInfo(SQLiteConnection connection, string query)
+    public static string SelectUserInfo(MySqlConnection connection, string query)
     {
         String response = "Id, Name, Login_info, Address, Photo, Commands, Cart, Invoices, Prefer_payment, Rating\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -102,11 +103,11 @@ public class SQLRequest
     }
     
     // SELECT Items -----------------------------------------------------------------------------------------------------------------
-    public static string SelectItems(SQLiteConnection connection, string query, int perso)
+    public static string SelectItems(MySqlConnection connection, string query, int perso)
     {
         String response = "Id, Name, Price, Description, Photo, Category, Seller, Rating\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -126,11 +127,11 @@ public class SQLRequest
     }
     
     // SELECT Commands -----------------------------------------------------------------------------------------------------------------
-    public static string SelectCommands(SQLiteConnection connection, string query)
+    public static string SelectCommands(MySqlConnection connection, string query)
     {
         String response = "Id of your previous command:\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -145,11 +146,11 @@ public class SQLRequest
     }
     
     // SELECT Cart -----------------------------------------------------------------------------------------------------------------
-    public static string SelectCart(SQLiteConnection connection, string query)
+    public static string SelectCart(MySqlConnection connection, string query)
     {
         String response = "Id of the items in your cart:\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -164,11 +165,11 @@ public class SQLRequest
     }
     
     // SELECT Invoices -----------------------------------------------------------------------------------------------------------------
-    public static string SelectInvoice(SQLiteConnection connection, string query)
+    public static string SelectInvoice(MySqlConnection connection, string query)
     {
         String response = "Id of your previous invoices:\n";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -184,11 +185,11 @@ public class SQLRequest
     }
     
     // SELECT Category -----------------------------------------------------------------------------------------------------------------
-    public static string SelectCategory(SQLiteConnection connection, string query)
+    public static string SelectCategory(MySqlConnection connection, string query)
     {
         String response = "Id, Name";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -199,11 +200,11 @@ public class SQLRequest
     }
     
     // SELECT Address -----------------------------------------------------------------------------------------------------------------
-    public static string SelectAddress(SQLiteConnection connection, string query)
+    public static string SelectAddress(MySqlConnection connection, string query)
     {
         String response = "Street, City, CP, State, Country";
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -213,7 +214,7 @@ public class SQLRequest
     }
     
     // Insert User -----------------------------------------------------------------------------------------------------------------
-    public static String InsertUser(SQLiteConnection connection, NameValueCollection parameters)
+    public static String InsertUser(MySqlConnection connection, NameValueCollection parameters)
     {
         // Récupération des Id avec un COUNT() 
         int countUser = GetMaxId(connection, "User", "Id") + 1;
@@ -233,7 +234,7 @@ public class SQLRequest
         string queryAuth = "INSERT INTO Auth (Id, Token) VALUES (@Val1, @Val2)";
         
         // Execution des Querys
-        using (SQLiteCommand command = new SQLiteCommand(queryLoginInfo, connection))
+        using (MySqlCommand command = new MySqlCommand(queryLoginInfo, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -241,7 +242,7 @@ public class SQLRequest
             command.Parameters.AddWithValue("@Val3", HashPwd(parameters["password"]));
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
-        using (SQLiteCommand command = new SQLiteCommand(queryAddress, connection))
+        using (MySqlCommand command = new MySqlCommand(queryAddress, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -253,7 +254,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryPhoto, connection))
+        using (MySqlCommand command = new MySqlCommand(queryPhoto, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countPhoto);
@@ -261,7 +262,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryCommands, connection))
+        using (MySqlCommand command = new MySqlCommand(queryCommands, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -269,7 +270,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryCart, connection))
+        using (MySqlCommand command = new MySqlCommand(queryCart, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -277,7 +278,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryInvoices, connection))
+        using (MySqlCommand command = new MySqlCommand(queryInvoices, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -285,7 +286,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryPreferPayement, connection))
+        using (MySqlCommand command = new MySqlCommand(queryPreferPayement, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -293,7 +294,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryRating, connection))
+        using (MySqlCommand command = new MySqlCommand(queryRating, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countRating);
@@ -302,7 +303,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryUser, connection))
+        using (MySqlCommand command = new MySqlCommand(queryUser, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1",countUser);
@@ -318,7 +319,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery();// Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryAuth, connection))
+        using (MySqlCommand command = new MySqlCommand(queryAuth, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countUser);
@@ -330,7 +331,7 @@ public class SQLRequest
     }
     
     // Insert Items -----------------------------------------------------------------------------------------------------------------
-    public static String InsertItem(SQLiteConnection connection, NameValueCollection parameters, int User_Id)
+    public static String InsertItem(MySqlConnection connection, NameValueCollection parameters, int User_Id)
     {
         // Récupération des Id avec un COUNT() et une autre requete 
         int countItems = GetMaxId(connection, "Items", "Id") + 1;
@@ -343,14 +344,14 @@ public class SQLRequest
         string queryPhoto = "INSERT INTO Photo (Id, Link) VALUES (@Val1, @Val2)";
         
         // Execution des Querys
-        using (SQLiteCommand command = new SQLiteCommand(queryPhoto, connection))
+        using (MySqlCommand command = new MySqlCommand(queryPhoto, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countPhoto);
             command.Parameters.AddWithValue("@Val2", "");
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
-        using (SQLiteCommand command = new SQLiteCommand(queryRating, connection))
+        using (MySqlCommand command = new MySqlCommand(queryRating, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countRating);
@@ -359,7 +360,7 @@ public class SQLRequest
             int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
         }
         
-        using (SQLiteCommand command = new SQLiteCommand(queryItems, connection))
+        using (MySqlCommand command = new MySqlCommand(queryItems, connection))
         {
             // Ajout des paramètres avec leurs valeurs
             command.Parameters.AddWithValue("@Val1", countItems);
@@ -376,28 +377,28 @@ public class SQLRequest
     }
     
     // Insert Address -------------------------------------------------------------------------------------------------------
-    public static void InsertAddress(SQLiteConnection connection, string query)
+    public static void InsertAddress(MySqlConnection connection, string query)
     {
         Console.WriteLine(query);
-        SQLiteCommand command = new SQLiteCommand(query, connection);
+        MySqlCommand command = new MySqlCommand(query, connection);
         int rowsAffected = command.ExecuteNonQuery(); // Exécution de la commande SQL
     }
     
     // Update Username ----------------------------------------------------------------------------------------------------------------------
-    public static void UpdateUsername(SQLiteConnection connection, string query)
+    public static void UpdateUsername(MySqlConnection connection, string query)
     {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader readerUser = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader readerUser = command.ExecuteReader();
     }
     
     // Update User Photo ----------------------------------------------------------------------------------------------------------------------
-    public static string UpdateUserPhoto(SQLiteConnection connection, string newPicture, int UserId)
+    public static string UpdateUserPhoto(MySqlConnection connection, string newPicture, int UserId)
     {
         // Recuperer Id Photo puis modifier
         int idPhoto = 0;
         string name = "";
-        SQLiteCommand command = new SQLiteCommand("SELECT Photo, Name FROM User WHERE Id = '" + UserId + "';", connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand("SELECT Photo, Name FROM User WHERE Id = '" + UserId + "';", connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -405,42 +406,42 @@ public class SQLRequest
             name = Convert.ToString(reader[1]);
         }
 
-        SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + newPicture + "' WHERE Id = " + idPhoto + ";", connection);
-        SQLiteDataReader readerUpdate = update.ExecuteReader();
+        MySqlCommand update = new MySqlCommand("UPDATE Photo SET Link = '" + newPicture + "' WHERE Id = " + idPhoto + ";", connection);
+        MySqlDataReader readerUpdate = update.ExecuteReader();
         return $"La photo de {name} à bien été mise à jour.";
     }
     
     // Update Item --------------------------------------------------------------------------------------------------------
-    public static void UpdateItem(SQLiteConnection connection, string query)
+    public static void UpdateItem(MySqlConnection connection, string query)
     {
-        SQLiteCommand command = new SQLiteCommand(query, connection);
-        SQLiteDataReader readerUser = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand(query, connection);
+        MySqlDataReader readerUser = command.ExecuteReader();
     }
     
     // Update Item Photo ---------------------------------------------------------------------------------------------------
-    public static void UpdateItemPhoto(SQLiteConnection connection, NameValueCollection parameters)
+    public static void UpdateItemPhoto(MySqlConnection connection, NameValueCollection parameters)
     {
         // Recuperer Id Photo puis modifier
         int idPhoto = 0;
-        SQLiteCommand command = new SQLiteCommand("SELECT Photo FROM Items WHERE Id = '" + parameters["item_id"] + "';", connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand("SELECT Photo FROM Items WHERE Id = '" + parameters["item_id"] + "';", connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
             idPhoto = Convert.ToInt32(reader[0]);
         }
 
-        SQLiteCommand update = new SQLiteCommand("UPDATE Photo SET Link = '" + parameters["picture"] + "' WHERE Id = " + idPhoto + ";", connection);
-        SQLiteDataReader readerUpdate = update.ExecuteReader();
+        MySqlCommand update = new MySqlCommand("UPDATE Photo SET Link = '" + parameters["picture"] + "' WHERE Id = " + idPhoto + ";", connection);
+        MySqlDataReader readerUpdate = update.ExecuteReader();
     }
 
     // Update Cart ----------------------------------------------------------------------------------------------------------------------
-    public static string UpdateCart(SQLiteConnection connection, NameValueCollection parameters, int User_Id)
+    public static string UpdateCart(MySqlConnection connection, NameValueCollection parameters, int User_Id)
     {
         // Récupération de l'id du panier lié à l'utilisateur
         int idCart = 0;
-        SQLiteCommand command = new SQLiteCommand("SELECT Cart FROM User WHERE Id = " + User_Id + ";", connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand("SELECT Cart FROM User WHERE Id = " + User_Id + ";", connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -450,7 +451,7 @@ public class SQLRequest
         // Execution de la requête en fonction de l'option placé en paramètre.
         if (parameters["option"] == "add")
         {
-            using (SQLiteCommand insert = new SQLiteCommand("INSERT INTO Cart (Id, Items) VALUES (@Val1, @Val2)", connection))
+            using (MySqlCommand insert = new MySqlCommand("INSERT INTO Cart (Id, Items) VALUES (@Val1, @Val2)", connection))
             {
                 // Ajout des paramètres avec leurs valeurs
                 insert.Parameters.AddWithValue("@Val1", idCart);
@@ -461,7 +462,7 @@ public class SQLRequest
         } 
         else if (parameters["option"] == "del")
         {
-            SQLiteCommand insert = new SQLiteCommand("DELETE FROM Cart WHERE Id = " + idCart + " AND Items = " + Convert.ToInt32(parameters["item_id"]) + ";" , connection);
+            MySqlCommand insert = new MySqlCommand("DELETE FROM Cart WHERE Id = " + idCart + " AND Items = " + Convert.ToInt32(parameters["item_id"]) + ";" , connection);
             int rowsAffected = insert.ExecuteNonQuery(); // Exécution de la commande SQL
             return $"The item has been delete successfully to your cart.";
         }
@@ -469,13 +470,13 @@ public class SQLRequest
     }
     
     // DELETE User ----------------------------------------------------------------------------------------------------------------------
-    public static void DeleteUser(SQLiteConnection connection, int UserId)
+    public static void DeleteUser(MySqlConnection connection, int UserId)
     {
         // Recupération des foreign key
         int idPhoto = 0;
         int idRating = 0;
-        SQLiteCommand command = new SQLiteCommand("SELECT Photo, Rating FROM User WHERE Id = " + UserId + ";", connection);
-        SQLiteDataReader reader = command.ExecuteReader();
+        MySqlCommand command = new MySqlCommand("SELECT Photo, Rating FROM User WHERE Id = " + UserId + ";", connection);
+        MySqlDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
             // Traitement des résultats de la requête SELECT
@@ -483,14 +484,14 @@ public class SQLRequest
             idRating = Convert.ToInt32(reader[1]);
         }
         
-        SQLiteCommand delUser = new SQLiteCommand("DELETE FROM User WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delLogin = new SQLiteCommand("DELETE FROM Login_info WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delAddress = new SQLiteCommand("DELETE FROM Address WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delPhoto = new SQLiteCommand("DELETE FROM Photo WHERE Id = " + idPhoto + ";", connection);
-        SQLiteCommand delCommands = new SQLiteCommand("DELETE FROM Commands WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delCart = new SQLiteCommand("DELETE FROM Cart WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delInvoices = new SQLiteCommand("DELETE FROM Invoices WHERE Id = " + UserId + ";", connection);
-        SQLiteCommand delRating = new SQLiteCommand("DELETE FROM Rating WHERE Id = " + idRating + ";", connection);
+        MySqlCommand delUser = new MySqlCommand("DELETE FROM User WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delLogin = new MySqlCommand("DELETE FROM Login_info WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delAddress = new MySqlCommand("DELETE FROM Address WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delPhoto = new MySqlCommand("DELETE FROM Photo WHERE Id = " + idPhoto + ";", connection);
+        MySqlCommand delCommands = new MySqlCommand("DELETE FROM Commands WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delCart = new MySqlCommand("DELETE FROM Cart WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delInvoices = new MySqlCommand("DELETE FROM Invoices WHERE Id = " + UserId + ";", connection);
+        MySqlCommand delRating = new MySqlCommand("DELETE FROM Rating WHERE Id = " + idRating + ";", connection);
         
         DeleteItem(connection, UserId, false);
         int Rows = delUser.ExecuteNonQuery();
@@ -504,7 +505,7 @@ public class SQLRequest
     }
     
     // Delete Item ----------------------------------------------------------------------------------------------------------------------
-    public static void DeleteItem(SQLiteConnection connection, int Id, bool IdItem)
+    public static void DeleteItem(MySqlConnection connection, int Id, bool IdItem)
     {
         // Faire une select puis delete les Items dans Cart puis l'item lui-même puis sa Photo, puis son Rating. Dans cette ordre
         // Cart -> Item -> Photo -> Cart.
@@ -513,44 +514,44 @@ public class SQLRequest
         int Rows = 0;
         if (IdItem) // delete item because of the delete account of the seller
         {
-            SQLiteCommand commandItem = new SQLiteCommand("SELECT Photo, Rating FROM Items WHERE Id = '" + Id + "';", connection);
-            SQLiteDataReader readerItem = commandItem.ExecuteReader();
+            MySqlCommand commandItem = new MySqlCommand("SELECT Photo, Rating FROM Items WHERE Id = '" + Id + "';", connection);
+            MySqlDataReader readerItem = commandItem.ExecuteReader();
             while (readerItem.Read())
             {
                 // Traitement des résultats de la requête SELECT
                 idPhoto = Convert.ToInt32(readerItem[0]);
                 idRating = Convert.ToInt32(readerItem[1]);
             }
-            SQLiteCommand delItem = new SQLiteCommand("DELETE FROM Items WHERE Id = " + Id + ";", connection);
+            MySqlCommand delItem = new MySqlCommand("DELETE FROM Items WHERE Id = " + Id + ";", connection);
             Rows = delItem.ExecuteNonQuery();
         }
         else if (!IdItem) // delete order by the seller
         {
-            SQLiteCommand commandItem = new SQLiteCommand("SELECT Photo, Rating FROM Items WHERE Seller = '" + Id + "';", connection);
-            SQLiteDataReader readerItem = commandItem.ExecuteReader();
+            MySqlCommand commandItem = new MySqlCommand("SELECT Photo, Rating FROM Items WHERE Seller = '" + Id + "';", connection);
+            MySqlDataReader readerItem = commandItem.ExecuteReader();
             while (readerItem.Read())
             {
                 // Traitement des résultats de la requête SELECT
                 idPhoto = Convert.ToInt32(readerItem[0]);
                 idRating = Convert.ToInt32(readerItem[1]);
             }
-            SQLiteCommand delItem = new SQLiteCommand("DELETE FROM Items WHERE Seller = " + Id + ";", connection);
+            MySqlCommand delItem = new MySqlCommand("DELETE FROM Items WHERE Seller = " + Id + ";", connection);
             Rows = delItem.ExecuteNonQuery();
         }
         
-        SQLiteCommand delPhoto = new SQLiteCommand("DELETE FROM Photo WHERE Id = " + idPhoto + ";", connection);
-        SQLiteCommand delRating = new SQLiteCommand("DELETE FROM Rating WHERE Id = " + idRating + ";", connection);
+        MySqlCommand delPhoto = new MySqlCommand("DELETE FROM Photo WHERE Id = " + idPhoto + ";", connection);
+        MySqlCommand delRating = new MySqlCommand("DELETE FROM Rating WHERE Id = " + idRating + ";", connection);
         
         Rows = delPhoto.ExecuteNonQuery();
         Rows = delRating.ExecuteNonQuery();
     }
     
     // Tools ----------------------------------------------------------------------------------------------------------------------
-    private static int GetMaxId(SQLiteConnection connection, string table, string column)
+    private static int GetMaxId(MySqlConnection connection, string table, string column)
     {
-        // SQLiteCommand commandUser = new SQLiteCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
-        SQLiteCommand commandUser = new SQLiteCommand("SELECT MAX(" + column + ") AS max FROM " + table + ";", connection);
-        SQLiteDataReader readerUser = commandUser.ExecuteReader();
+        // MySqlCommand commandUser = new MySqlCommand("SELECT COUNT(" + column + ") AS Number0fUser FROM "+ table +";", connection);
+        MySqlCommand commandUser = new MySqlCommand("SELECT MAX(" + column + ") AS max FROM " + table + ";", connection);
+        MySqlDataReader readerUser = commandUser.ExecuteReader();
         while (readerUser.Read())
         {
             // Traitement des résultats de la requête SELECT
