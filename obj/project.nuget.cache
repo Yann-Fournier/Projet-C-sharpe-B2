@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "OnYP1KA6ynca9a1OarD3rnxnUt0coK+vr4ix0BSkZQabfNjlEQpGkvkLDzR1i/oJCSsKGqU+t6SuIkuvUvMBIA==",
+  "dgSpecHash": "wd8muSt7lUypqdVOjCHJUOw1/pSbE3XwMdCqYE2azkPmECh+JMDb7wuEGpEgFeYkc1DdBYdi+MIF2BSP+1dI6A==",
   "success": true,
-  "projectFilePath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
+  "projectFilePath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\Test_Projet.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\alber\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\alber\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",

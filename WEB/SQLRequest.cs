@@ -4,7 +4,7 @@ using System.Text;
 using MySql.Data.MySqlClient;
 // using MySqlConnector;
 
-namespace WEB;
+namespace app;
 
 public class SQLRequest
 {

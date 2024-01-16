@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {}
+    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\Test_Projet.csproj": {}
   },
   "projects": {
-    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {
+    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\Test_Projet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
+        "projectUniqueName": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\Test_Projet.csproj",
         "projectName": "Test_Projet",
-        "projectPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
+        "projectPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\Test_Projet.csproj",
         "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
-        "outputPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\obj\\",
+        "outputPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2-master\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config",
