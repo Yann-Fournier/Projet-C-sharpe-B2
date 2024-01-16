@@ -14,31 +14,22 @@ class Program
         // Reset database ...
         // SQLRequest.CreateDatabaseFile();
         
+        // Connection à la base de données
+        MySqlConnection connection = SQLRequest.OpenMySqlConnection();
+        
+        
         // Création de l'api en localhost sur le port 8080
-        string url = "http://localhost:8080/";
+        string url = "http://10.92.100.10:8080/";
         var listener = new HttpListener();
         listener.Prefixes.Add(url);
         listener.Start();
-        // Connection à la base de données
-        MySqlConnection connection = SQLRequest.OpenMySqlConnection();
-        try
-        {
-            connection.ConnectionString = "server=10.92.100.11;uid=root;pwd=root;database=database";
-            connection.Open();
-            Console.WriteLine($"Ecoute sur {url}");
-            
+        Console.WriteLine($"Ecoute sur {url}");
         
-            // Boucle permettant de récuperer les requêtes
-            while (true)
-            {
-                var context = await listener.GetContextAsync();
-                ProcessRequest(context, connection);
-            }
-        }
-        catch (MySqlException e)
+        // Boucle permettant de récuperer les requêtes
+        while (true)
         {
-            Console.WriteLine(e);
-            throw;
+            var context = await listener.GetContextAsync();
+            ProcessRequest(context, connection);
         }
     }
     
