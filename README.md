@@ -6,6 +6,7 @@ Projet C# de deuxième année.
 - Bdd : SQL Server
 - Back : C#
 - Front : XML
+- Documentation : [Documentation-API-C.pdf](Documentation-API-C.pdf)
 
 ## BDD
     https://github.com/albericwalsh/ecomerce.git
