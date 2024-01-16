@@ -28,12 +28,21 @@ class Program
         // Boucle permettant de récuperer les requêtes
         while (true)
         {
-            var context = await listener.GetContextAsync();
-            ProcessRequest(context, connection);
+            try
+            {
+                Console.WriteLine($"En attente d'une requetes");
+                HttpListenerContext context = await listener.GetContextAsync().ConfigureAwait(false);
+                Console.WriteLine($"Context Ok");
+                await ProcessRequest(context, connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error handling request: {ex.Message}");
+            }
         }
     }
     
-    static void ProcessRequest(HttpListenerContext context, MySqlConnection connection)
+    static async Task ProcessRequest(HttpListenerContext context, MySqlConnection connection)
     {
         string responseString = ""; // Initialisation de la réponse
         bool pasOk = false;

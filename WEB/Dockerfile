@@ -10,7 +10,7 @@ ADD dotnet_install.sh .
 RUN chmod +x dotnet_install.sh
 RUN ./dotnet_install.sh
 ADD ./start.sh .
-EXPOSE 8080
+EXPOSE 80
 WORKDIR /app
 COPY ./Test_Projet.csproj .
 #RUN dotnet restore

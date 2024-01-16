@@ -1,19 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {}
-  },
-  "projects": {
-    "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
-        "projectName": "Test_Projet",
-        "projectPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
-        "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
-        "outputPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\obj\\",
-=======
     "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {}
   },
   "projects": {
@@ -25,7 +12,6 @@
         "projectPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
         "packagesPath": "C:\\Users\\yfour\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\obj\\",
->>>>>>> 7c21ac3976172ae8e8b59d4657ff6f67ec4f9020
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
