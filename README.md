@@ -13,9 +13,7 @@ Projet C# de deuxième année.
 - username: api_user
 - password: 0123
 
-
-## To Do List
-    - Trouver un moyen de vérifier les paramètres (parametre.Lenght)
+[Project-Csharp.PDF](Project-Csharp.PDF)
 
 ## Archi (23 requêtes):
 >En vert: rêquetes disponibles.
