@@ -8,33 +8,6 @@ namespace app;
 
 public class SQLRequest
 {
-    // Reset Database --------------------------------------------------------------------------------------------------------------------------
-    public static void CreateDatabaseFile()
-    {
-        string scriptFilePath = @"..\\..\\..\\BDD\\script.sql";
-        string databaseFilePath = @"..\\..\\..\\BDD\\database.mysql";
-
-        if (File.Exists(scriptFilePath) && File.Exists(databaseFilePath))
-        {
-            string script = File.ReadAllText(scriptFilePath);
-
-            using (MySqlConnection connection = new MySqlConnection($"Data Source={databaseFilePath};Version=3;"))
-            {
-                connection.Open();
-
-                using (MySqlCommand command = new MySqlCommand(script, connection))
-                {
-                    command.ExecuteNonQuery();
-                }
-            }
-            Console.WriteLine("Base de données créée avec succès.");
-        }
-        else
-        {
-            Console.WriteLine("Le fichier SQL n'existe pas.");
-        }
-    }
-    
     // Connection à la base de données ------------------------------------------------------------------------------------------------------
     public static MySqlConnection OpenMySqlConnection()
     {
