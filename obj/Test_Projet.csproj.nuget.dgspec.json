@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj": {}
   },
   "projects": {
@@ -12,9 +13,26 @@
         "projectPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\Test_Projet.csproj",
         "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
         "outputPath": "D:\\Ynov\\API_ecomerce\\Projet-C-sharpe-B2\\obj\\",
+=======
+    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
+        "projectName": "Test_Projet",
+        "projectPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\Test_Projet.csproj",
+        "packagesPath": "C:\\Users\\yfour\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\yfour\\OneDrive\\Documents\\cours_Ynov\\B2\\C#\\Projet_API\\obj\\",
+>>>>>>> 7c21ac3976172ae8e8b59d4657ff6f67ec4f9020
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\yfour\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -73,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,11 +1,16 @@
 # Projet-C-sharpe-B2
 Projet C# de deuxième année.
 
+Les servers web sont héberger sur docker. Voici comment les lancers: 
+- Placez vous dans le dossier racine du repo
+- Puis entrez cette commande dans le terminal: docker compose up -d --build
+- Pour arreter les servers, entrez dans le terminal: docker compose down
 
 ## Présentation du projet
 - Bdd : SQL Server
 - Back : C#
 - Front : XML
+- Documentation : [Documentation-API-C.pdf](Documentation-API-C.pdf)
 
 ## BDD
     https://github.com/albericwalsh/ecomerce.git
@@ -13,15 +18,10 @@ Projet C# de deuxième année.
 - username: api_user
 - password: 0123
 
-
-## To Do List
-    - Trouver un moyen de vérifier les paramètres (parametre.Lenght)
-
 ## Archi (23 requêtes):
 >En vert: rêquetes disponibles.
 
 >En rouge: rêquetes non disponibles.
-
 ![Archi_API.png](Archi_API.png)
 
     - / -> page d'acceuil

@@ -12,7 +12,7 @@ public class SQLRequest
     public static MySqlConnection OpenMySqlConnection()
     {
         // Data Source = chemin de la database
-        string connectionString = $"server=localhost;port=3306;User ID=root;Password=root;";
+        string connectionString = $"server=10.92.100.11;port=3306;User ID=root;Password=root;";
         // Création de la connection
         MySqlConnection connection = new MySqlConnection(connectionString);
         try

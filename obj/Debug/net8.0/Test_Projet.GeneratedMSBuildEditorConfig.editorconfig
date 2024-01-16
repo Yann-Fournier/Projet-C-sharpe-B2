@@ -8,6 +8,10 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Test_Projet
+<<<<<<< HEAD
 build_property.ProjectDir = D:\Ynov\API_ecomerce\Projet-C-sharpe-B2\
+=======
+build_property.ProjectDir = C:\Users\yfour\OneDrive\Documents\cours_Ynov\B2\C#\Projet_API\
+>>>>>>> 7c21ac3976172ae8e8b59d4657ff6f67ec4f9020
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
