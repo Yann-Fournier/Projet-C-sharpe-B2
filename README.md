@@ -1,6 +1,10 @@
 # Projet-C-sharpe-B2
 Projet C# de deuxième année.
 
+Les servers web sont héberger sur docker. Voici comment les lancers: 
+- Placer vous dans le dossier racine du repo
+- Puis entrez cette commande dans le terminal: docker compose up -d --build
+- Pour arreter les servers, entrez dans le terminal: docker compose down
 
 ## Présentation du projet
 - Bdd : SQL Server
