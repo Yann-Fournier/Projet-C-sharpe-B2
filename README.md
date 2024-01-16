@@ -21,7 +21,6 @@ Projet C# de deuxième année.
 >En vert: rêquetes disponibles.
 
 >En rouge: rêquetes non disponibles.
-[Documentation API C.odt](Documentation%20API%20C.odt)
 ![Archi_API.png](Archi_API.png)
 
     - / -> page d'acceuil
