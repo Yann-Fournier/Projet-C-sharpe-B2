@@ -19,7 +19,7 @@ class Program
         
         
         // Création de l'api en localhost sur le port 8080
-        string url = "http://10.92.100.10:8080/";
+        string url = "http://localhost:8080/";
         var listener = new HttpListener();
         listener.Prefixes.Add(url);
         listener.Start();
